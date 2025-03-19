@@ -25,9 +25,12 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 - [ ] 📊 **Music Analytics**: Gain insights into your listening habits and preferences
 
 ## 📸 Screenshots
-![Home Screen](screenshots/home_screen.png)
-![Playlist Screen](screenshots/playlist_screen.png)
-![Settings Screen](screenshots/settings_screen.png)
+<div style="display: flex; gap: 10px;">
+    <img src="https://github.com/user-attachments/assets/ba690cd0-2ae4-4628-a672-4a9f139a8dc5" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
+    <img src="https://github.com/user-attachments/assets/80cce045-8929-463a-8d53-ea044130bac8" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
+    <img src="https://github.com/user-attachments/assets/799165bc-e03d-46f1-9981-6353fd76f6b8" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
+</div>
+
 
 ## 🚀 Getting Started
 Follow these steps to set up and run VibeY on your local machine.
