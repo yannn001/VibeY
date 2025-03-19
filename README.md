@@ -38,7 +38,7 @@ Follow these steps to set up and run VibeY on your local machine.
 ### ✅ Prerequisites
 - [Flutter](https://flutter.dev/docs/get-started/install) (version 3.0 or higher)
 - [Dart](https://dart.dev/get-dart)
-- Bloc
+- [Bloc](https://bloclibrary.dev/)
 - Get
 - Cubit
 
