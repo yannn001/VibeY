@@ -57,7 +57,7 @@ Follow these steps to set up and run VibeY on your local machine.
    ```
 
 ## 🤝 Contributing
-We welcome contributions to make Vibey even better! Please follow these steps:
+We welcome contributions to make VibeY even better! Please follow these steps:
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -72,7 +72,7 @@ Please ensure your code follows our coding standards and includes appropriate te
 - Write unit tests for new features
 
 ## 📝 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
 ---
 
