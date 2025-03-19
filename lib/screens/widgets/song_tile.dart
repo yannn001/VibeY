@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:vibey/screens/pages/views/song_info_screen.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/utils/imgurl_formator.dart';
@@ -17,7 +16,6 @@ import 'package:vibey/utils/load_Image.dart';
 class SongCardWidget extends StatelessWidget {
   final MediaItemModel song;
   final bool? showOptions;
-  final bool? showInfoBtn;
   final bool? showPlayBtn;
   final bool? showCopyBtn;
   final bool? delDownBtn;
@@ -33,7 +31,6 @@ class SongCardWidget extends StatelessWidget {
     Key? key,
     required this.song,
     this.showOptions,
-    this.showInfoBtn,
     this.showPlayBtn,
     this.delDownBtn,
     this.onOptionsTap,
@@ -192,34 +189,6 @@ class SongCardWidget extends StatelessWidget {
                           } catch (e) {
                             SnackbarService.showMessage(
                               "Failed to copy ${song.title}",
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  )
-                  : const SizedBox(),
-              (showInfoBtn ?? false)
-                  ? Padding(
-                    padding: const EdgeInsets.only(left: 2, right: 2),
-                    child: Tooltip(
-                      message: "About this song",
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.info_rounded,
-                          size: 30,
-                          color: Theme.of(context).textTheme.bodyMedium!.color,
-                        ),
-                        onPressed: () {
-                          if (onInfoTap != null) {
-                            onInfoTap!();
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => SongInfoScreen(song: song),
-                              ),
                             );
                           }
                         },

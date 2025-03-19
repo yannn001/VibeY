@@ -53,9 +53,7 @@ class SettingsView extends StatelessWidget {
                           label: 'Download',
                           onPressed: () {
                             // Open the download page
-                            launchUrl(
-                              Uri.parse('https://vibey.ariyanmistry.online'),
-                            );
+                            launchUrl(Uri.parse('https://vibey.pages.dev/'));
                           },
                         ),
                       ),

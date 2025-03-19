@@ -52,7 +52,6 @@ void showMoreBottomSheet(
                 song: song,
                 showOptions: false,
                 showCopyBtn: false,
-                showInfoBtn: true,
               ),
             ),
             // Divider for clean separation
