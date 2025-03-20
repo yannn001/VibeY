@@ -35,17 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
   YTMusicCubit yTMusicCubit = YTMusicCubit();
 
   final List<String> randomPlaylist = [
-    "Pop",
     "Feel Good",
-    "Party Time",
-    "Romantic Evening",
     "Sad Songs",
-    "Motivation Boost",
     "Relaxing Music",
     "Happy Tunes",
-    "Upbeat Energy",
     "Workout Mix",
-    "Study Beats",
     "Driving Music",
     "Dance Party",
   ];
@@ -88,17 +82,19 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _fetchRandomList();
+    _fetchRandomAlbum();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Theme.of(context).scaffoldBackgroundColor,
         statusBarIconBrightness: Theme.of(context).brightness,
       ),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetchRandomAlbum();
-      await _fetchRandomList();
-    });
   }
 
   Future<void> _fetchRandomAlbum() async {

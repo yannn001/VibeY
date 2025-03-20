@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:vibey/Repo/JioMusic/saavn_api.dart';
 import 'package:vibey/Repo/Youtube/yt_music_api.dart';
@@ -16,6 +18,9 @@ import 'package:vibey/services/YtAudioSrc.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Constants.dart';
 import 'package:vibey/values/Strings_Const.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_cache/just_audio_cache.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 List<int> generateRandomIndices(int length) {
   List<int> indices = List<int>.generate(length, (i) => i);
@@ -36,6 +41,7 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
   );
   int currentPlayingIdx = 0;
   int shuffleIdx = 0;
+  int maxCacheSizeMB = 500; // Set max cache size to 500MB
   List<int> shuffleList = [];
   final _playlist = ConcatenatingAudioSource(children: []);
 
@@ -234,38 +240,99 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
   }
 
   Future<AudioSource> getAudioSource(MediaItem mediaItem) async {
-    final _down = await DBService.getDownloadDB(
-      mediaItem2MediaItemModel(mediaItem),
-    );
-    if (_down != null) {
-      log("Playing Offline", name: "Player");
-      SnackbarService.showMessage(
-        "Playing Offline",
-        duration: const Duration(seconds: 1),
+    await _manageCacheSize(); // Ensure cache is within limit before adding new files
+
+    if (mediaItem.extras?["source"] == "youtube") {
+      String? quality = await DBService.getSettingStr(
+        GlobalStrConsts.ytStrmQuality,
       );
-      isOffline.add(true);
-      return AudioSource.uri(
-        Uri.file('${_down.filePath}/${_down.fileName}'),
-        tag: mediaItem,
-      );
-    } else {
-      isOffline.add(false);
-      if (mediaItem.extras?["source"] == "youtube") {
-        String? quality = await DBService.getSettingStr(
-          GlobalStrConsts.ytStrmQuality,
-        );
-        quality = quality ?? "high";
-        quality = quality.toLowerCase();
-        final id = mediaItem.id.replaceAll("youtube", '');
-        return YouTubeAudioSource(
-          videoId: id,
-          quality: quality,
-          tag: mediaItem,
-        );
+      quality = (quality ?? "high").toLowerCase();
+      final id = mediaItem.id.replaceAll("youtube", '');
+
+      // Check if file is already cached
+      final cachedFile = await _getCachedFile(id);
+      if (cachedFile != null) {
+        return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
       }
-      String? kurl = await getJsQualityURL(mediaItem.extras?["url"]);
-      log('Playing: $kurl', name: "Player");
-      return AudioSource.uri(Uri.parse(kurl!), tag: mediaItem);
+
+      //loading feedback
+      SnackbarService.showMessage("Loading...");
+      // If not cached, download and store
+      final file = await _downloadYouTubeAudio(id);
+
+      if (file != null) {
+        return AudioSource.uri(Uri.file(file.path), tag: mediaItem);
+      }
+
+      throw Exception("Failed to download YouTube audio.");
+    }
+
+    String? kurl = await getJsQualityURL(mediaItem.extras?["url"]);
+    log('Playing: $kurl', name: "Player");
+
+    // Cache the file if not already cached
+    final cachedFile = await _getCachedFile(kurl!);
+    if (cachedFile != null) {
+      return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
+    }
+
+    return AudioSource.uri(Uri.parse(kurl), tag: mediaItem);
+  }
+
+  // Function to download YouTube audio
+  Future<File?> _downloadYouTubeAudio(String videoId) async {
+    final yt = YoutubeExplode();
+    try {
+      var manifest = await yt.videos.streamsClient.getManifest(videoId);
+      var audioStream = manifest.audioOnly.withHighestBitrate();
+
+      // Get file path in cache directory
+      final filePath = await _getCacheFilePath(videoId);
+      final file = File(filePath);
+      var stream = yt.videos.streamsClient.get(audioStream);
+      var fileStream = file.openWrite();
+
+      await stream.pipe(fileStream);
+      await fileStream.flush();
+      await fileStream.close();
+
+      return file;
+    } catch (e) {
+      print("YouTube Download Error: $e");
+    } finally {
+      yt.close();
+    }
+    return null;
+  }
+
+  // Get cached file if available
+  Future<File?> _getCachedFile(String key) async {
+    final filePath = await _getCacheFilePath(key);
+    final file = File(filePath);
+    return await file.exists() ? file : null;
+  }
+
+  // Get cache directory path
+  Future<String> _getCacheFilePath(String key) async {
+    final cacheDir = await getTemporaryDirectory();
+    return "${cacheDir.path}/audio_cache_$key.mp3";
+  }
+
+  // Manage cache size and delete old files
+  Future<void> _manageCacheSize() async {
+    final cacheDir = await getTemporaryDirectory();
+    final files = cacheDir.listSync().whereType<File>().toList();
+
+    // Sort by oldest files first
+    files.sort((a, b) => a.lastModifiedSync().compareTo(b.lastModifiedSync()));
+
+    int totalSize = files.fold(0, (sum, file) => sum + file.lengthSync());
+    int maxSizeBytes = maxCacheSizeMB * 1024 * 1024;
+
+    while (totalSize > maxSizeBytes && files.isNotEmpty) {
+      final fileToRemove = files.removeAt(0);
+      totalSize -= fileToRemove.lengthSync();
+      fileToRemove.deleteSync();
     }
   }
 
@@ -309,7 +376,11 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
   }
 
   @override
-  Future<void> playMediaItem(MediaItem mediaItem, {bool doPlay = true}) async {
+  Future<void> playMediaItem(
+    MediaItem mediaItem, {
+    bool doPlay = true,
+    required,
+  }) async {
     final audioSource = await getAudioSource(mediaItem);
     await playAudioSource(audioSource: audioSource, mediaId: mediaItem.id);
     await check4RelatedSongs();

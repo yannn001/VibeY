@@ -152,11 +152,11 @@ class SettingsView extends StatelessWidget {
                 onTap: () async {
                   const url = 'https://github.com/yannn001/VibeY';
                   final Uri githubUrl = Uri.parse(url);
-                  if (await canLaunchUrl(githubUrl)) {
-                    await launchUrl(githubUrl);
-                  } else {
-                    throw 'Could not launch $url';
-                  }
+
+                  await launchUrl(
+                    githubUrl,
+                    mode: LaunchMode.externalApplication,
+                  );
                 },
               ),
               settingListTile(

@@ -24,7 +24,6 @@ import 'package:vibey/modules/mini_player/mini_player_bloc.dart';
 import 'package:vibey/modules/notification/notification_cubit.dart';
 import 'package:vibey/modules/fetch_data/fetch_search_results.dart';
 import 'package:vibey/modules/settings_cubit/cubit/settings_cubit.dart';
-import 'package:vibey/modules/timer/timer_bloc.dart';
 import 'package:vibey/screens/pages/library_views/cubit/current_playlist_cubit.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
 import 'package:vibey/services/db/cubit/DBCubit.dart';
@@ -33,7 +32,6 @@ import 'package:vibey/services/file_manager.dart';
 import 'package:vibey/services/shortcuts_intents.dart';
 import 'package:vibey/theme/ThemeCubit.dart';
 import 'package:vibey/theme/default.dart';
-import 'package:vibey/utils/ticker.dart';
 import 'package:vibey/values/routes.dart';
 
 Future<void> importItems(String path) async {
@@ -157,13 +155,7 @@ class _MyAppState extends State<MyApp> {
                 create: (context) => NotificationCubit(),
                 lazy: false,
               ),
-              BlocProvider(
-                create:
-                    (context) => TimerBloc(
-                      ticker: const Ticker(),
-                      vibeyplayer: vibeyPlayerCubit,
-                    ),
-              ),
+
               BlocProvider(
                 create: (context) => ConnectivityCubit(),
                 lazy: false,
@@ -183,9 +175,6 @@ class _MyAppState extends State<MyApp> {
                 create: (context) => AddToPlaylistCubit(),
                 lazy: false,
               ),
-              // BlocProvider(
-              //   create: (context) => ImportPlaylistCubit(),
-              // ),
               BlocProvider(
                 create: (context) => FetchSearchResultsCubit(),
                 lazy: false,

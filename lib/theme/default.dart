@@ -82,7 +82,7 @@ class Default_Theme {
     colorScheme: ColorScheme.fromSwatch().copyWith(
       primary: accentColor2,
       secondary: accentColor1,
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       surface: primaryColor1,
     ),
     iconTheme: const IconThemeData(color: themeColor),

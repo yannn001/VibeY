@@ -92,6 +92,9 @@ dependencies:
   android_intent_plus: ^5.1.0
   google_fonts: ^6.2.1
   get: ^4.7.2
+  flutter_cache_manager: ^3.3.1
+  just_audio_cache: ^0.1.2
+  flutter_spinkit: ^5.2.1
   
  
   

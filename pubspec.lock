@@ -487,7 +487,7 @@ packages:
     source: hosted
     version: "8.1.6"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "8207f27539deb83732fdda03e259349046a39a4c767269285f449ade355d54ba"
@@ -558,6 +558,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      sha256: d2696eed13732831414595b98863260e33e8882fc069ee80ec35d4ac9ddb0472
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_svg:
     dependency: transitive
     description:
@@ -776,6 +784,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.46"
+  just_audio_cache:
+    dependency: "direct main"
+    description:
+      name: just_audio_cache
+      sha256: aecf2167c24f0c6ecdb180ecc7dae75b9e0b351c8714ecd8aafb1be9016376fc
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   just_audio_media_kit:
     dependency: "direct main"
     description:
