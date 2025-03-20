@@ -64,15 +64,18 @@ We welcome contributions to make VibeY even better! Please follow these steps:
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes – Implement your feature or fix the issue.
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 Please ensure your code follows our coding standards and includes appropriate tests.
 
-### Coding Guidelines
+We look forward to your contributions! 🚀
+
+### Guidelines
 - Follow the [Effective Dart](https://dart.dev/guides/language/effective-dart) style guide
-- Write unit tests for new features
+- If you're fixing a bug, provide details in the PR description.
 
 ## 📝 License
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
