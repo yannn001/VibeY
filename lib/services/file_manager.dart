@@ -65,12 +65,6 @@ class FileManager {
   }
 
   static Future<bool> importPlaylist(String filePath) async {
-    //check if file is json or not
-    // if (!filePath.endsWith('.blm')) {
-    //   log("Invalid file format", name: "FileManager");
-    //   return;
-    // }
-    // import playlist from json file
     try {
       await readFromJSON(filePath).then((playlistMap) async {
         log("Playlist map: $playlistMap", name: "FileManager");
@@ -102,29 +96,20 @@ class FileManager {
       return true;
     } catch (e) {
       log("Invalid file format");
-      // SnackbarService.showMessage("Invalid file format");
       return false;
     }
   }
 
   static Future<bool> importMediaItem(String filePath) async {
-    // if (!filePath.endsWith('.blm')) {
-    //   log("Invalid file format", name: "FileManager");
-    //   return;
-    // }
-    // import media item from json file
     try {
       await readFromJSON(filePath).then((mediaItemMap) {
         if (mediaItemMap != null && mediaItemMap.isNotEmpty) {
           final mediaItemDB = MediaItemDB.fromMap(mediaItemMap);
           DBService.addMediaItem(mediaItemDB, "Imported");
-          log("Media item imported successfully");
-          // SnackbarService.showMessage("Media item imported successfully");
         }
       });
       return true;
     } catch (e) {
-      // SnackbarService.showMessage("Error importing media item");
       log("Invalid file format");
     }
     return false;
@@ -134,7 +119,6 @@ class FileManager {
     String fileName,
     Map<String, dynamic> data,
   ) async {
-    // write data to file
     try {
       final filePath = (await getApplicationCacheDirectory()).path;
       final file = File('$filePath/$fileName');
@@ -148,7 +132,6 @@ class FileManager {
   }
 
   static Future<Map<String, dynamic>?> readFromJSON(String filePath) async {
-    // read data from file
     try {
       final file = File(filePath);
       final data = await file.readAsString();
