@@ -19,7 +19,6 @@ import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Constants.dart';
 import 'package:vibey/values/Strings_Const.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_cache/just_audio_cache.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 List<int> generateRandomIndices(int length) {
@@ -298,7 +297,9 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
 
       return file;
     } catch (e) {
-      print("YouTube Download Error: $e");
+      if (kDebugMode) {
+        print("YouTube Download Error: $e");
+      }
     } finally {
       yt.close();
     }

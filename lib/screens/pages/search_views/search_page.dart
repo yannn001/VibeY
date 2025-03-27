@@ -139,7 +139,6 @@ class SearchPageDelegate extends SearchDelegate {
               onTap: () {
                 query = suggestionList[index];
                 showResults(context);
-                // Show the search results based on the selected suggestion.
               },
             );
           },

@@ -200,14 +200,7 @@ class LibraryScreen extends StatelessWidget {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () {
-                  // Navigate to import playlist using Navigator
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => const ImportMediaFromPlatformsView(),
-                    ),
-                  );
+                  showImportMediaBottomSheet(context);
                 },
                 icon: Icon(
                   Icons.playlist_add_check_circle_rounded,

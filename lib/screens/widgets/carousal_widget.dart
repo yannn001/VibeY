@@ -107,11 +107,11 @@ class CarouselItem extends StatelessWidget {
           Positioned(
             bottom: 20,
             child: Visibility(
-              visible: false,
+              visible: true,
               child: Text(
                 title,
                 style: TextStyle(
-                  color: textColor,
+                  color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

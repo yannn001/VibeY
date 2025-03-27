@@ -335,6 +335,7 @@ class CoverImage extends StatefulWidget {
 class _CoverImageState extends State<CoverImage>
     with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
+  late StreamSubscription<PlayerState> _playerStateSubscription;
 
   @override
   void initState() {
@@ -345,23 +346,26 @@ class _CoverImageState extends State<CoverImage>
       duration: const Duration(seconds: 10), // Controls the speed of rotation
     );
 
-    // Listen for changes in the player state to start/stop the rotation
-    context
+    _playerStateSubscription = context
         .read<VibeyPlayerCubit>()
         .vibeyplayer
         .audioPlayer
         .playerStateStream
         .listen((playerState) {
-          if (playerState.playing) {
-            _rotationController.repeat(); // Start rotating
-          } else {
-            _rotationController.stop(); // Stop rotating
+          if (mounted) {
+            // Ensure widget is still in the tree
+            if (playerState.playing) {
+              _rotationController.repeat();
+            } else {
+              _rotationController.stop();
+            }
           }
         });
   }
 
   @override
   void dispose() {
+    _playerStateSubscription.cancel(); // Cancel the stream subscription
     _rotationController.dispose();
     super.dispose();
   }

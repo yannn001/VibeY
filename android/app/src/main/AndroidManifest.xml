@@ -29,23 +29,6 @@
         <category android:name="android.intent.category.DEFAULT" />
         <data android:mimeType="text/plain" />
       </intent-filter>
-       <intent-filter android:label="Import Playlist">
-        <action android:name="android.intent.action.VIEW" />
-
-        <category android:name="android.intent.category.BROWSABLE" />
-        <category android:name="android.intent.category.DEFAULT" />
-
-        <data android:mimeType="application/json" />
-        <data android:mimeType="application/octet-stream" />
-        <data android:pathPattern="*.vyb"/>
-        <data android:pathPattern=".*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\..*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\..*\\..*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.vyb" />
-        <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.vyb" />
-      </intent-filter>
     </activity>
 
 

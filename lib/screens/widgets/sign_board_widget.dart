@@ -27,12 +27,7 @@ class SignBoardWidget extends StatelessWidget {
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium!.color?.withOpacity(0.7),
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.redAccent, fontSize: 14),
               ),
             ],
           ),

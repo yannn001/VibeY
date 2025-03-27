@@ -265,7 +265,7 @@ class _AddToPlaylistScreenState extends State<AddToPlaylistScreen> {
                 "Create New Playlist",
                 style: Default_Theme.secondoryTextStyle.merge(
                   const TextStyle(
-                    color: Default_Theme.accentColor1,
+                    color: Default_Theme.primaryColor01,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),
