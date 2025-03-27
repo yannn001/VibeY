@@ -25,6 +25,7 @@ import 'package:vibey/modules/notification/notification_cubit.dart';
 import 'package:vibey/modules/fetch_data/fetch_search_results.dart';
 import 'package:vibey/modules/settings_cubit/cubit/settings_cubit.dart';
 import 'package:vibey/screens/pages/library_views/cubit/current_playlist_cubit.dart';
+import 'package:vibey/screens/pages/library_views/cubit/import_playlist_cubit.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
 import 'package:vibey/services/db/cubit/DBCubit.dart';
 import 'package:vibey/services/db/db_service.dart';
@@ -32,6 +33,9 @@ import 'package:vibey/services/file_manager.dart';
 import 'package:vibey/services/shortcuts_intents.dart';
 import 'package:vibey/theme/ThemeCubit.dart';
 import 'package:vibey/theme/default.dart';
+import 'package:vibey/utils/importer.dart';
+import 'package:vibey/utils/ticker.dart';
+import 'package:vibey/utils/urls.dart';
 import 'package:vibey/values/routes.dart';
 
 Future<void> importItems(String path) async {
@@ -44,6 +48,50 @@ Future<void> importItems(String path) async {
       SnackbarService.showMessage("Playlist Imported");
     } else {
       SnackbarService.showMessage("Invalid File Format");
+    }
+  }
+}
+
+void processIncomingIntent(List<SharedMediaFile> sharedMediaFiles) {
+  if (isUrl(sharedMediaFiles[0].path)) {
+    final urlType = getUrlType(sharedMediaFiles[0].path);
+    switch (urlType) {
+      case UrlType.spotifyTrack:
+        ExternalMediaImporter.sfyMediaImporter(sharedMediaFiles[0].path).then((
+          value,
+        ) async {
+          if (value != null) {
+            await vibeyPlayerCubit.vibeyplayer.addQueueItem(value);
+          }
+        });
+        break;
+      case UrlType.spotifyPlaylist:
+        SnackbarService.showMessage("Import Spotify Playlist from library!");
+        break;
+      case UrlType.youtubePlaylist:
+        SnackbarService.showMessage("Import Youtube Playlist from library!");
+        break;
+      case UrlType.spotifyAlbum:
+        SnackbarService.showMessage("Import Spotify Album from library!");
+        break;
+      case UrlType.youtubeVideo:
+        ExternalMediaImporter.ytMediaImporter(sharedMediaFiles[0].path).then((
+          value,
+        ) async {
+          if (value != null) {
+            await vibeyPlayerCubit.vibeyplayer.addQueueItem(value);
+          }
+        });
+        break;
+      case UrlType.other:
+        if (sharedMediaFiles[0].mimeType == "application/octet-stream") {
+          SnackbarService.showMessage("Processing File...");
+          importItems(
+            Uri.parse(sharedMediaFiles[0].path).toFilePath().toString(),
+          );
+        }
+      default:
+        log("Invalid URL");
     }
   }
 }
@@ -175,6 +223,7 @@ class _MyAppState extends State<MyApp> {
                 create: (context) => AddToPlaylistCubit(),
                 lazy: false,
               ),
+              BlocProvider(create: (context) => ImportPlaylistCubit()),
               BlocProvider(
                 create: (context) => FetchSearchResultsCubit(),
                 lazy: false,

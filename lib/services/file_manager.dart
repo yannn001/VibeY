@@ -32,7 +32,7 @@ class FileManager {
             'mediaItems': playlistItems.map((e) => e.toMap()).toList(),
           };
           final path = await writeToJSON(
-            '${mediaPlaylistDB.playlistName}_vibeyPlaylist.blm',
+            '${mediaPlaylistDB.playlistName}_vibeyPlaylist.vyb',
             playlistMap,
           );
           log("Playlist exported successfully", name: "FileManager");
@@ -53,7 +53,7 @@ class FileManager {
     try {
       final Map<String, dynamic> mediaItemMap = mediaItemDB.toMap();
       final path = await writeToJSON(
-        '${mediaItemDB.title}_vibeySong.blm',
+        '${mediaItemDB.title}_vibeySong.vyb',
         mediaItemMap,
       );
       log("Media item exported successfully", name: "FileManager");

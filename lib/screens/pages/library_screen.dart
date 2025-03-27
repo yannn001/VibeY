@@ -5,6 +5,7 @@ import 'package:vibey/screens/pages/views/artist_view.dart';
 import 'package:vibey/screens/pages/views/playlist_view.dart';
 import 'package:vibey/screens/pages/library_views/cubit/current_playlist_cubit.dart';
 import 'package:vibey/screens/pages/library_views/more_bottomsheet.dart';
+import 'package:vibey/screens/widgets/importPlaylist_bottomsheet.dart';
 import 'package:vibey/screens/widgets/sign_board_widget.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
 import 'package:vibey/services/db/GlobalDB.dart';
@@ -27,7 +28,7 @@ class LibraryScreen extends StatelessWidget {
         body: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            customDiscoverBar(context), //AppBar
+            appBar(context),
             BlocBuilder<LibraryItemsCubit, LibraryItemsState>(
               builder: (context, state) {
                 if (state is LibraryItemsInitial) {
@@ -159,7 +160,7 @@ class LibraryScreen extends StatelessWidget {
     );
   }
 
-  SliverAppBar customDiscoverBar(BuildContext context) {
+  SliverAppBar appBar(BuildContext context) {
     return SliverAppBar(
       floating: true,
       toolbarHeight: 100,
@@ -181,14 +182,35 @@ class LibraryScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 constraints: const BoxConstraints(),
                 style: const ButtonStyle(
-                  tapTargetSize:
-                      MaterialTapTargetSize.shrinkWrap, // the '2023' part
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () {
                   createPlaylistBottomSheet(context);
                 },
                 icon: Icon(
                   Icons.add_circle_rounded,
+                  size: 25,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
+                ),
+              ),
+              IconButton(
+                padding: const EdgeInsets.all(5),
+                constraints: const BoxConstraints(),
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  // Navigate to import playlist using Navigator
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => const ImportMediaFromPlatformsView(),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.playlist_add_check_circle_rounded,
                   size: 25,
                   color: Theme.of(context).textTheme.bodyMedium!.color,
                 ),

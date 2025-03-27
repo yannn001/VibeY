@@ -174,7 +174,6 @@ class DBCubit extends Cubit<MediadbState> {
       MediaItem2MediaItemDB(mediaItemModel),
       mediaPlaylistDB.playlistName,
     );
-    // refreshLibrary.add(true);
     if (!undo) {
       SnackbarService.showMessage(
         "${mediaItemModel.title} is added to ${mediaPlaylistDB.playlistName}.",

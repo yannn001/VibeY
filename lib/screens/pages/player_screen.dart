@@ -867,8 +867,7 @@ class PlayerCtrlWidgets extends StatelessWidget {
                     padding: const EdgeInsets.all(5),
                     constraints: const BoxConstraints(),
                     style: const ButtonStyle(
-                      tapTargetSize:
-                          MaterialTapTargetSize.shrinkWrap, // the '2023' part
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () => musicPlayer.skipToNext(),
                     icon: Image.asset(
