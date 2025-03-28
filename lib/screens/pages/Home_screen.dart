@@ -1,6 +1,7 @@
 import 'dart:math' as random;
 
 import 'package:flutter/services.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:vibey/models/source_engines.dart';
 import 'package:vibey/modules/fetch_data/fetch_albums.dart';
 import 'package:vibey/modules/home/cubit/recently_cubits.dart';
@@ -82,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    requestPermissions();
     _fetchRandomList();
     _fetchRandomAlbum();
   }
@@ -304,6 +306,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void requestPermissions() async {
+    await OneSignal.Notifications.requestPermission(true);
   }
 
   // Widget _buildAlbumList(FetchSearchResultsState fetchState) {

@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -73,6 +74,8 @@ Future<void> initServices() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // Load .env file
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.initialize("6f1894eb-de73-4308-80b0-a8b5feadd6d9");
   GestureBinding.instance.resamplingEnabled = true;
   if (io.Platform.isLinux || io.Platform.isWindows) {
     JustAudioMediaKit.ensureInitialized(linux: true, windows: true);
