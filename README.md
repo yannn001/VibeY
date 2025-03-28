@@ -6,6 +6,9 @@
   ![Flutter](https://img.shields.io/badge/Flutter-3.0%2B-blue)
   ![Dart](https://img.shields.io/badge/Dart-%5E3.0.0-blue)
   ![License](https://img.shields.io/badge/License-MIT-green)
+  ![GitHub Releases](https://img.shields.io/github/downloads/yannn001/VibeY/total)
+  ![GitHub release](https://img.shields.io/github/v/release/yannn001/VibeY)
+
 </div>
 
 VibeY delivers premium music streaming without ads, featuring exceptional audio quality and pristine sound reproduction. Enjoy uninterrupted listening while VibeY creates tailored playlists perfectly suited for every moment and activity.
