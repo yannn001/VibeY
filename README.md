@@ -12,6 +12,7 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 
 ## 📌 Features
 - [x] 🎵 **Seamless Music Streaming**: Play your favorite tracks with zero buffering
+- [x] 🎵 **AI Playlist Creation**: Create playlists based on your prompt.
 - [x] 📂 **Custom Playlists**: Create and manage your personalized playlists
 - [x] 🔎 **Advanced Search**: Find songs, artists, and albums with powerful search capabilities
 - [x] 🎨 **User-Friendly UI**: A clean and minimal interface designed for ease of use

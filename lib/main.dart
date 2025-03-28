@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,6 +72,7 @@ Future<void> initServices() async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env"); // Load .env file
   GestureBinding.instance.resamplingEnabled = true;
   if (io.Platform.isLinux || io.Platform.isWindows) {
     JustAudioMediaKit.ensureInitialized(linux: true, windows: true);

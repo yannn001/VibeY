@@ -51,22 +51,6 @@ Future<Lyrics> getLRCNetAPILyrics(
 }
 
 Future<Lyrics> getLRCNetLyricsById(String id) async {
-  // [IN]
-  // Field	    Required	Type	  Description
-  // id	        true	    number	ID of the lyrics record
-
-  // [OUT]
-  // {
-  //   "id": 3396226,
-  //   "trackName": "I Want to Live",
-  //   "artistName": "Borislav Slavov",
-  //   "albumName": "Baldur's Gate 3 (Original Game Soundtrack)",
-  //   "duration": 233,
-  //   "instrumental": false,
-  //   "plainLyrics": "I feel your breath upon my neck\n...The clock won't stop and this is what we get\n",
-  //   "syncedLyrics": "[00:17.12] I feel your breath upon my neck\n...[03:20.31] The clock won't stop and this is what we get\n[03:25.72] "
-  // }
-
   final response = await http.get(Uri.parse("$lrcURL$lrcGet/$id"));
   log("LRCLibNet by ID: $id", name: "LRCNetAPI");
   if (response.statusCode == 200) {
@@ -95,25 +79,6 @@ Future<Lyrics> getLRCNetLyrics(
   String album,
   String duration,
 ) async {
-  // [IN]
-  // Field	      Required	Type	  Description
-  // track_name	  true	    string	Title of the track
-  // artist_name	true	    string	Name of the artist
-  // album_name	  true	    string	Name of the album
-  // duration	    true	    number	Track's duration in seconds
-
-  // [OUT]
-  // {
-  //   "id": 3396226,
-  //   "trackName": "I Want to Live",
-  //   "artistName": "Borislav Slavov",
-  //   "albumName": "Baldur's Gate 3 (Original Game Soundtrack)",
-  //   "duration": 233,
-  //   "instrumental": false,
-  //   "plainLyrics": "I feel your breath upon my neck\n...The clock won't stop and this is what we get\n",
-  //   "syncedLyrics": "[00:17.12] I feel your breath upon my neck\n...[03:20.31] The clock won't stop and this is what we get\n[03:25.72] "
-  // }
-
   log("LRCLibNet by Title/GET: $title", name: "LRCNetAPI");
 
   final response = await http.get(
@@ -148,18 +113,6 @@ Future<List<Lyrics>> searchLRCNetLyrics(
   String? artistName,
   String? albumName,
 }) async {
-  // [IN]
-  //   Field	    Required	    Type	  Description
-  //    q	        conditional	  string	Search for keyword present in ANY fields (track's title, artist name or album name)
-  // track_name	  conditional	  string	Search for keyword in track's title
-  // artist_name	false	        string	Search for keyword in track's artist name
-  // album_name	  false	        string	Search for keyword in track's album name
-
-  // [OUT]
-  // JSON array of the lyrics records with the following parameters:
-  // id, trackName, artistName, albumName, duration, instrumental,
-  // plainLyrics and syncedLyrics.
-
   log("LRCLibNet by Search: $q", name: "LRCNetAPI");
 
   final String fields =
@@ -228,8 +181,6 @@ Future<Lyrics> searchSingleLRCNetLyrics(
                     }).toList(),
               )
               .index];
-
-      // log('Synced: ${_synced.toString()}', name: "LRCNetAPI");
     }
     lyrics =
         lyricsList[fw
@@ -237,7 +188,6 @@ Future<Lyrics> searchSingleLRCNetLyrics(
               query: query,
               choices:
                   lyricsList.map((e) {
-                    // log('${e.title} ${e.artist} ${e.album}', name: "LRCNetAPI");
                     return '${e.title} ${e.artist} ${e.album}';
                   }).toList(),
             )
@@ -249,7 +199,6 @@ Future<Lyrics> searchSingleLRCNetLyrics(
       );
       if (_ratio >= 80) {
         lyrics = _synced;
-        // log("Ratio: $_ratio - $lyrics", name: "LRCNetAPI");
       }
     }
   } else {

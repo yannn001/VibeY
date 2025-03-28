@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Strings_Const.dart';
@@ -13,8 +14,8 @@ class SpotifyApi {
     'playlist-read-collaborative',
   ];
 
-  final String clientID = '4ede44382bf14ac3ba1d97ad753b233f';
-  final String clientSecret = 'fb01ad204aff4c12bbcb3ca7ac617990';
+  final apiID = dotenv.env['CLIENT_ID'];
+  final apiSecret = dotenv.env['CLIENT_SECRET'];
   final String redirectUrl = '127.0.0.1';
   final String spotifyApiUrl = 'https://accounts.spotify.com/api';
   final String spotifyApiBaseUrl = 'https://api.spotify.com/v1';
@@ -26,7 +27,7 @@ class SpotifyApi {
   final String requestToken = 'https://accounts.spotify.com/api/token';
 
   String requestAuthorization() =>
-      'https://accounts.spotify.com/authorize?client_id=$clientID&response_type=code&redirect_uri=$redirectUrl&scope=${_scopes.join('%20')}';
+      'https://accounts.spotify.com/authorize?client_id=$apiID&response_type=code&redirect_uri=$redirectUrl&scope=${_scopes.join('%20')}';
 
   Future<String> getAccessTokenCC() async {
     final token = await DBService.getApiTokenDB(
@@ -39,7 +40,7 @@ class SpotifyApi {
     var response;
     final tokenUrl = Uri.parse('https://accounts.spotify.com/api/token');
     String basicAuth =
-        'Basic ${base64Encode(utf8.encode('$clientID:$clientSecret'))}';
+        'Basic ${base64Encode(utf8.encode('$apiID:$apiSecret'))}';
     try {
       response = await post(
         tokenUrl,
@@ -71,7 +72,7 @@ class SpotifyApi {
   }) async {
     final Map<String, String> headers = {
       'Authorization':
-          "Basic ${base64.encode(utf8.encode("$clientID:$clientSecret"))}",
+          "Basic ${base64.encode(utf8.encode("$apiID:$apiSecret"))}",
     };
 
     Map<String, String>? body;

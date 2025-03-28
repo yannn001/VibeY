@@ -5,6 +5,7 @@ import 'package:vibey/screens/pages/views/artist_view.dart';
 import 'package:vibey/screens/pages/views/playlist_view.dart';
 import 'package:vibey/screens/pages/library_views/cubit/current_playlist_cubit.dart';
 import 'package:vibey/screens/pages/library_views/more_bottomsheet.dart';
+import 'package:vibey/screens/widgets/createAIplaylist_bottomsheet.dart';
 import 'package:vibey/screens/widgets/importPlaylist_bottomsheet.dart';
 import 'package:vibey/screens/widgets/sign_board_widget.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
@@ -208,6 +209,17 @@ class LibraryScreen extends StatelessWidget {
                   color: Theme.of(context).textTheme.bodyMedium!.color,
                 ),
               ),
+              IconButton(
+                padding: const EdgeInsets.all(5),
+                constraints: const BoxConstraints(),
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                onPressed: () {
+                  AIPlaylistGenerator.showAIPromptDialog(context);
+                },
+                icon: Image.asset('assets/icons/ai.png', width: 32, height: 30),
+              ),
             ],
           ),
         ],
@@ -231,7 +243,6 @@ class _ListOfPlaylistsState extends State<ListOfPlaylists> {
       itemCount: widget.state.playlists.length,
       itemBuilder: (context, index) {
         final playlist = widget.state.playlists[index];
-
         if (playlist.playlistName == "recently_played" ||
             playlist.playlistName == GlobalStrConsts.downloadPlaylist) {
           return const SizedBox.shrink();

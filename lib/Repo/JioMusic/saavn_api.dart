@@ -84,19 +84,6 @@ class SaavnAPI {
       return {"no": "error"};
     }
   }
-  // Future<Map> fetchHomePageData() async {
-  //   Map result = {};
-  //   try {
-  //     final res = await getResponse(endpoints['homeData']!);
-  //     if (res.statusCode == 200) {
-  //       final Map data = json.decode(res.body) as Map;
-  //       result = await formatHomePageData(data);
-  //     }
-  //   } catch (e) {
-  //     log('Error in fetchHomePageData: $e');
-  //   }
-  //   return result;
-  // }
 
   Future<Map> getSongFromToken(
     String token,
@@ -165,8 +152,6 @@ class SaavnAPI {
     List searchedPlaylistList = [];
     List searchedArtistList = [];
     List searchedTopQueryList = [];
-    // List searchedShowList = [];
-    // List searchedEpisodeList = [];
 
     final String params =
         '__call=autocomplete.get&cc=in&includeMetaTags=1&query=$searchQuery';
