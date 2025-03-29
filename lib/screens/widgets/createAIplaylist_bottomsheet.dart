@@ -28,7 +28,7 @@ class AIPlaylistGenerator {
           "Content-Type": "application/json",
         },
         body: json.encode({
-          "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
+          "model": "meta-llama/Llama-Vision-Free",
           "messages": [
             {
               "role": "system",
@@ -37,6 +37,8 @@ class AIPlaylistGenerator {
             },
             {"role": "user", "content": prompt},
           ],
+          "max_tokens": 300,
+          "temperature": 0.5,
         }),
       );
 
