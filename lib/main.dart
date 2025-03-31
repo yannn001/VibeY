@@ -77,9 +77,6 @@ Future<void> main() async {
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.initialize("6f1894eb-de73-4308-80b0-a8b5feadd6d9");
   GestureBinding.instance.resamplingEnabled = true;
-  if (io.Platform.isLinux || io.Platform.isWindows) {
-    JustAudioMediaKit.ensureInitialized(linux: true, windows: true);
-  }
   await initServices();
   setHighRefreshRate();
   MetadataGod.initialize();
@@ -111,13 +108,9 @@ class _MyAppState extends State<MyApp> {
         sharedMediaFiles.addAll(event);
         log(sharedMediaFiles[0].mimeType.toString(), name: "Shared Files");
         log(sharedMediaFiles[0].path, name: "Shared Files");
-        // processIncomingIntent(sharedMediaFiles);
 
-        // Tell the library that we are done processing the intent.
         ReceiveSharingIntent.instance.reset();
       });
-
-      // For sharing or opening urls/text coming from outside the app while the app is closed
 
       ReceiveSharingIntent.instance.getInitialMedia().then((event) {
         sharedMediaFiles.clear();
@@ -127,7 +120,6 @@ class _MyAppState extends State<MyApp> {
           name: "Shared Files Offline",
         );
         log(sharedMediaFiles[0].path, name: "Shared Files Offline");
-        // processIncomingIntent(sharedMediaFiles);
         ReceiveSharingIntent.instance.reset();
       });
     }

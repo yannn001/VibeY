@@ -124,16 +124,13 @@ flutter_launcher_icons:
   image_path: "assets/icons/vibey_logo.png"
   min_sdk_android: 21 
 
-  macos:
-    generate: true
-    image_path: "assets/icons/vibey_logo.png"
   windows:
     generate: true
-    image_path: "assets/icons/logo_transparent.png"
+    image_path: "assets/icons/vibey_logo.png"
 
 # The following section is specific to Flutter packages.
 flutter:
-
+ 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
