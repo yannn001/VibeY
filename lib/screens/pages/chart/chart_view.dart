@@ -1,5 +1,5 @@
-import 'package:vibey/plugins/ext_charts/Music_charts.dart';
 import 'package:flutter/material.dart';
+import 'package:vibey/charts/home_chart/Music_charts.dart';
 import 'package:vibey/models/chart.dart';
 import 'package:vibey/screens/widgets/chart_list_tile.dart';
 import 'package:vibey/theme/default.dart';

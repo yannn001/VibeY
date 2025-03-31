@@ -130,7 +130,6 @@ class _MyAppState extends State<MyApp> {
     _intentSub.cancel();
     vibeyPlayerCubit.vibeyplayer.audioPlayer.dispose();
     vibeyPlayerCubit.close();
-    if (io.Platform.isWindows || io.Platform.isLinux || io.Platform.isMacOS) {}
     super.dispose();
   }
 

@@ -266,16 +266,15 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                         child: SizedBox(
                           width: constraints.maxWidth * 0.90,
                           child: GestureDetector(
-                            onHorizontalDragUpdate: (details) {
-                              if (details.primaryDelta! < -10) {
-                                // Logic to toggle lyrics visibility
-                                setState(() {
-                                  showLyrics = true;
-                                });
-                              } else if (details.primaryDelta! > 10) {
-                                setState(() {
-                                  showLyrics = false;
-                                });
+                            onHorizontalDragEnd: (details) {
+                              if (details.primaryVelocity != null) {
+                                if (details.primaryVelocity! < -100) {
+                                  // Swipe left: Skip to next song
+                                  musicPlayer.skipToNext();
+                                } else if (details.primaryVelocity! > 100) {
+                                  // Swipe right: Skip to previous song
+                                  musicPlayer.skipToPrevious();
+                                }
                               }
                             },
                             child: Column(
@@ -296,12 +295,9 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                                       padding: const EdgeInsets.only(top: 10),
                                       child: AnimatedSwitcher(
                                         duration: Duration(milliseconds: 300),
-                                        child:
-                                            showLyrics
-                                                ? LyricsWidget()
-                                                : CoverImage(
-                                                  constraints: constraints,
-                                                ),
+                                        child: CoverImage(
+                                          constraints: constraints,
+                                        ),
                                       ),
                                     ),
                                   ),

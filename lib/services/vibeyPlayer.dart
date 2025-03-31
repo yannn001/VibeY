@@ -44,18 +44,13 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
   List<int> shuffleList = [];
   final _playlist = ConcatenatingAudioSource(children: []);
 
-  // final ReceivePort receivePortYt = ReceivePort();
-  // SendPort? sendPortYt;
-
   Vibeyplayer() {
-    // initBgYt();
     audioPlayer = AudioPlayer(handleInterruptions: true);
     audioPlayer.setVolume(1);
     audioPlayer.playbackEventStream.listen(_broadcastPlayerEvent);
     audioPlayer.setLoopMode(LoopMode.off);
     audioPlayer.setAudioSource(_playlist, preload: false);
 
-    // Update the current media item when the audio player changes to the next
     Rx.combineLatest2(
       audioPlayer.sequenceStream,
       audioPlayer.currentIndexStream,
@@ -65,14 +60,16 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
       },
     ).whereType<MediaItem>().listen(mediaItem.add);
 
-    // Trigger skipToNext when the current song ends.
-    final endingOffset =
-        Platform.isWindows ? 200 : (Platform.isLinux ? 700 : 0);
+    // Listen for playback state changes
     audioPlayer.positionStream.listen((event) {
-      if (audioPlayer.duration != null &&
-          audioPlayer.duration?.inSeconds != 0 &&
-          event.inMilliseconds >
-              audioPlayer.duration!.inMilliseconds - endingOffset &&
+      EasyThrottle.throttle(
+        'loadRelatedSongs',
+        const Duration(seconds: 5),
+        () async => check4RelatedSongs(),
+      );
+      if (((audioPlayer.duration != null &&
+              audioPlayer.duration?.inSeconds != 0 &&
+              event.inMilliseconds > audioPlayer.duration!.inMilliseconds)) &&
           loopMode.value != LoopMode.one) {
         EasyThrottle.throttle(
           'skipNext',
@@ -96,7 +93,6 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
         controls: [
           MediaControl.skipToPrevious,
           isPlaying ? MediaControl.pause : MediaControl.play,
-          // MediaControl.stop,
           MediaControl.skipToNext,
         ],
         processingState: switch (event.processingState) {
