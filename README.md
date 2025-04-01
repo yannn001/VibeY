@@ -11,6 +11,8 @@
 
 </div>
 
+![VibeY (1)](https://github.com/user-attachments/assets/2a61b3d3-5849-40c5-a823-97193bb42ac3)
+
 VibeY delivers premium music streaming without ads, featuring exceptional audio quality and pristine sound reproduction. Enjoy uninterrupted listening while VibeY creates tailored playlists perfectly suited for every moment and activity.
 
 ## 📌 Features
@@ -36,6 +38,7 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
     <img src="https://github.com/user-attachments/assets/a39fc114-7c4a-4985-94b1-99385617213b" width="310" height="550" >
     <img src="https://github.com/user-attachments/assets/0f9dfb4f-cfa5-4ccc-9855-02037af0208d" width="310" height="550" >
 </div>
+
 
 ## 🚀 Getting Started
 Follow these steps to set up and run VibeY on your local machine.
