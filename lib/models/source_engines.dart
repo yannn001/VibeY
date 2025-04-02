@@ -2,9 +2,9 @@ import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Strings_Const.dart';
 
 enum SourceEngine {
+  eng_JIS("Recommended"),
   eng_YTM("Trending"),
-  eng_YTV("Popular"),
-  eng_JIS("Recommended");
+  eng_YTV("Popular");
 
   final String value;
   const SourceEngine(this.value);
