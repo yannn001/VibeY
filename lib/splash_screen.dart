@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:vibey/theme/default.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -59,17 +60,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Default_Theme.themeColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Default_Theme.themeColor,
-              Default_Theme.accentColor1.withOpacity(0.6),
-            ],
-          ),
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Center(
           child: AnimatedBuilder(
@@ -77,68 +71,51 @@ class _SplashScreenState extends State<SplashScreen>
             builder: (context, child) {
               return Opacity(
                 opacity: _fadeAnimation.value,
-                child: Transform.scale(
-                  scale: _scaleAnimation.value,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Logo section
-                      Container(
-                        width: 200,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Default_Theme.themeColor.withOpacity(0.5),
-                              blurRadius: 20,
-                              spreadRadius: 5,
-                            ),
-                          ],
-                        ),
-                        child: ClipRect(
-                          child: Image.asset(
-                            'assets/icons/vibey_logo.png',
-                            width: 200,
-                            height: 200,
-                            fit: BoxFit.cover,
-                          ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo section
+                    Container(
+                      width: 200,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: ClipRect(
+                        child: Image.asset(
+                          'assets/icons/vibey_logo.png',
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      const SizedBox(height: 30),
+                    ),
+                    const SizedBox(height: 30),
 
-                      // App name
-                      Text(
-                        "VibeY",
-                        style: TextStyle(
-                          color: Default_Theme.primaryColor1,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                          shadows: [
-                            Shadow(
-                              blurRadius: 10.0,
-                              color: Default_Theme.accentColor1.withOpacity(
-                                0.5,
-                              ),
-                              offset: const Offset(2.0, 2.0),
-                            ),
-                          ],
-                        ),
+                    // App name
+                    Text(
+                      "VibeY",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: GoogleFonts.roboto().fontFamily,
+                        letterSpacing: 2,
                       ),
-                      const SizedBox(height: 20),
+                    ),
+                    const SizedBox(height: 20),
 
-                      // Tagline
-                      Text(
-                        "Tune In, Turn Up, VibeY Out",
-                        style: TextStyle(
-                          color: Default_Theme.primaryColor2,
-                          fontSize: 18,
-                          fontStyle: FontStyle.italic,
-                        ),
+                    // Tagline
+                    Text(
+                      "Tune In, Turn Up, VibeY Out",
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                        fontSize: 18,
+                        fontStyle: FontStyle.italic,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },

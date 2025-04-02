@@ -1,13 +1,14 @@
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:vibey/modules/lyrics/lyrics_cubit.dart';
 import 'package:vibey/modules/mediaPlayer/PlayerCubit.dart';
 import 'package:vibey/screens/widgets/sign_board_widget.dart';
 import 'package:vibey/theme/default.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:icons_plus/icons_plus.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class LyricsWidget extends StatelessWidget {
   const LyricsWidget({super.key});
@@ -16,54 +17,109 @@ class LyricsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LyricsCubit, LyricsState>(
       builder: (context, state) {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          child: switch (state) {
-            LyricsInitial() => const Center(child: CircularProgressIndicator()),
-            LyricsLoaded() => loadedLyricsWidget(context, state),
-            LyricsError() => const SignBoardWidget(
-              icon: MingCute.music_2_line,
-              message: "No Lyrics Found",
+        return Stack(
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: switch (state) {
+                LyricsInitial() => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+
+                // return condtional widget
+                LyricsLoaded() => LoadedLyricsWidget(state: state),
+                LyricsError() => const SignBoardWidget(
+                  icon: MingCute.music_2_line,
+                  message: "No Lyrics Found",
+                ),
+                LyricsLoading() => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                LyricsState() => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              },
             ),
-            LyricsLoading() => const Center(child: CircularProgressIndicator()),
-            LyricsState() => const Center(child: CircularProgressIndicator()),
-          },
+            Positioned(
+              right: 3,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
   }
 }
 
-Widget loadedLyricsWidget(BuildContext context, LyricsState state) {
-  if (state.lyrics.parsedLyrics == null &&
-      state.lyrics.lyricsPlain.isNotEmpty) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+class LoadedLyricsWidget extends StatelessWidget {
+  final LyricsState state;
+  const LoadedLyricsWidget({super.key, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.lyrics.parsedLyrics == null &&
+        state.lyrics.lyricsPlain.isNotEmpty) {
+      return PlainLyricsWidget(state: state);
+    } else if (state.lyrics.parsedLyrics != null) {
+      return SyncedLyricsWidget(state: state);
+    }
+    return const Center(
+      child: SignBoardWidget(
+        message: "No Lyrics found!",
+        icon: MingCute.music_2_line,
+      ),
+    );
+  }
+}
+
+class PlainLyricsWidget extends StatelessWidget {
+  final LyricsState state;
+  const PlainLyricsWidget({super.key, required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.white,
+            Colors.white,
+            Colors.transparent,
+          ],
+          stops: [
+            0.0,
+            0.1,
+            0.9,
+            1.0,
+          ], // Adjust the stops to control the fade position
+        ).createShader(bounds);
+      },
+      blendMode: BlendMode.dstIn,
       child: SingleChildScrollView(
         child: SelectableText(
           "\n${state.lyrics.lyricsPlain}\n",
           textAlign: TextAlign.center,
-          style: GoogleFonts.inter(
-            textStyle: Default_Theme.secondoryTextStyle.merge(
-              TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
+          style: Default_Theme.secondoryTextStyle.merge(
+            const TextStyle(
+              fontSize: 18,
+              fontFamily: 'NotoSans',
+              fontWeight: FontWeight.w600,
+              color: Default_Theme.primaryColor1,
             ),
           ),
         ),
       ),
     );
-  } else if (state.lyrics.parsedLyrics != null) {
-    return SyncedLyricsWidget(state: state);
   }
-  return const Center(
-    child: SignBoardWidget(
-      message: "No Lyrics found",
-      icon: MingCute.music_2_line,
-    ),
-  );
 }
 
 class SyncedLyricsWidget extends StatefulWidget {
@@ -77,8 +133,12 @@ class SyncedLyricsWidget extends StatefulWidget {
 class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
   StreamSubscription? _streamSubscription;
   final ItemScrollController _itemScrollController = ItemScrollController();
+  final ScrollOffsetController _scrollOffsetController =
+      ScrollOffsetController();
   final ItemPositionsListener _itemPositionsListener =
       ItemPositionsListener.create();
+  final ScrollOffsetListener _scrollOffsetListener =
+      ScrollOffsetListener.create();
   Duration duration = Duration.zero;
 
   @override
@@ -105,6 +165,9 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
 
   void _scrollToCurrentLyric() {
     final currentIndex = _findCurrentLyricIndex();
+    if (isEndVisible()) {
+      return;
+    }
     if (currentIndex >= 4 || !isIdxVisible(currentIndex)) {
       _itemScrollController.scrollTo(
         index: currentIndex < 4 ? currentIndex : currentIndex - 3,
@@ -135,10 +198,15 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
     return 0;
   }
 
+  bool isEndVisible() {
+    return _itemPositionsListener.itemPositions.value.last.index ==
+        widget.state.lyrics.parsedLyrics!.lyrics.length - 1;
+  }
+
   bool isIdxVisible(int index) {
-    return _itemPositionsListener.itemPositions.value.any(
-      (element) => element.index == index,
-    );
+    return _itemPositionsListener.itemPositions.value
+        .where((element) => element.index == index)
+        .isNotEmpty;
   }
 
   bool isCurrentLyric(int index) {
@@ -162,29 +230,48 @@ class _SyncedLyricsWidgetState extends State<SyncedLyricsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.white,
+            Colors.white,
+            Colors.transparent,
+          ],
+          stops: [
+            0.0,
+            0.1,
+            0.9,
+            1.0,
+          ], // Adjust the stops to control the fade position
+        ).createShader(bounds);
+      },
+      blendMode: BlendMode.dstIn,
       child: ScrollablePositionedList.builder(
+        shrinkWrap: true,
         itemScrollController: _itemScrollController,
         itemPositionsListener: _itemPositionsListener,
+        scrollDirection: Axis.vertical,
+        scrollOffsetController: _scrollOffsetController,
+        scrollOffsetListener: _scrollOffsetListener,
         itemCount: widget.state.lyrics.parsedLyrics!.lyrics.length,
+        padding: const EdgeInsets.symmetric(vertical: 30),
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
-              widget.state.lyrics.parsedLyrics!.lyrics[index].text,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                textStyle: Default_Theme.secondoryTextStyle.merge(
-                  TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color:
-                        isCurrentLyric(index)
-                            ? Default_Theme.accentColor2.withOpacity(0.9)
-                            : Default_Theme.primaryColor2.withOpacity(0.7),
-                  ),
-                ),
+          return Text(
+            widget.state.lyrics.parsedLyrics!.lyrics[index].text,
+            textAlign: TextAlign.center,
+            style: Default_Theme.secondoryTextStyle.merge(
+              TextStyle(
+                fontSize: 32,
+                fontFamily: GoogleFonts.mPlusRounded1c().fontFamily,
+                fontWeight: FontWeight.w400,
+                color:
+                    isCurrentLyric(index)
+                        ? Default_Theme.themeColor
+                        : Default_Theme.primaryColor2,
               ),
             ),
           );

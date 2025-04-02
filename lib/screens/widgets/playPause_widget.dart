@@ -27,9 +27,9 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
       _isPlaying ? widget.onPause!() : widget.onPlay!();
       _isPlaying = !_isPlaying;
       _currentColor =
-          _isPlaying
-              ? Default_Theme.primaryColor1
-              : Default_Theme.primaryColor1;
+          (_isPlaying
+              ? Theme.of(context).textTheme.bodyMedium!.color
+              : Theme.of(context).textTheme.bodyMedium!.color)!;
     });
   }
 
@@ -38,7 +38,9 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
     double _size = widget.size;
     _isPlaying = widget.isPlaying;
     _currentColor =
-        _isPlaying ? Default_Theme.primaryColor1 : Default_Theme.accentColor1;
+        (_isPlaying
+            ? Theme.of(context).textTheme.bodyMedium!.color
+            : Default_Theme.accentColor1)!;
     return GestureDetector(
       onTap: _togglePlayPause,
       child: AnimatedContainer(
@@ -55,7 +57,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
                   ? Icon(
                     Icons.pause_rounded,
                     size: widget.size * 0.5,
-                    color: Default_Theme.themeColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   )
                   : Icon(
                     Icons.play_arrow_rounded,

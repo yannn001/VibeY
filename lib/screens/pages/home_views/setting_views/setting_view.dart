@@ -195,7 +195,7 @@ class SettingsView extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Version: v1.0.5+5',
+                      'Version: v1.0.6+6',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],

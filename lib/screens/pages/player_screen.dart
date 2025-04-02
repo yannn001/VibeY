@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vibey/modules/mini_player/mini_player_bloc.dart';
+import 'package:vibey/screens/pages/Lyrics_screen.dart';
 import 'package:vibey/screens/widgets/more_bottom_sheet.dart';
 import 'package:vibey/services/vibeyPlayer.dart';
 import 'package:vibey/services/shortcuts_intents.dart';
@@ -137,16 +138,30 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
           // Added this widget to enable keyboard shortcuts
           autofocus: true,
           child: Scaffold(
-            backgroundColor: Colors.black,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
-              iconTheme: IconThemeData(color: Default_Theme.primaryColor01),
-              toolbarHeight: 70,
+              iconTheme: IconThemeData(
+                color: Theme.of(context).textTheme.bodyMedium!.color,
+                size: 32,
+              ),
+              toolbarHeight: 80,
               backgroundColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               elevation: 0,
               foregroundColor: Default_Theme.primaryColor01,
               centerTitle: true,
+              actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 32,
+                  color: Theme.of(context).textTheme.bodyMedium!.color,
+                ),
+              ),
               actions: [
                 IconButton(
                   onPressed: () {
@@ -155,10 +170,10 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                       context.read<VibeyPlayerCubit>().vibeyplayer.currentMedia,
                     );
                   },
-                  icon: const Icon(
-                    MingCute.more_2_fill,
-                    size: 25,
-                    color: Default_Theme.primaryColor01,
+                  icon: Icon(
+                    MingCute.more_1_fill,
+                    size: 28,
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
                   ),
                 ),
               ],
@@ -169,15 +184,15 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Default_Theme.accentColor1,
-                      fontSize: 18,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ).merge(Default_Theme.secondoryTextStyle),
                   ),
                   Text(
                     'Now Playing',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Default_Theme.primaryColor2,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
                       fontSize: 12,
                     ).merge(Default_Theme.secondoryTextStyle),
                   ),
@@ -243,7 +258,7 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                         opacity: 0.15,
                         child: SizedBox(
                           width: constraints.maxWidth,
-                          height: constraints.maxHeight * 0.50,
+                          height: constraints.maxHeight * 0.65,
                           child: StreamBuilder<MediaItem?>(
                             stream: musicPlayer.mediaItem,
                             builder: (context, snapshot) {
@@ -295,8 +310,20 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
                                       padding: const EdgeInsets.only(top: 10),
                                       child: AnimatedSwitcher(
                                         duration: Duration(milliseconds: 300),
-                                        child: CoverImage(
-                                          constraints: constraints,
+                                        child: GestureDetector(
+                                          onDoubleTap: () {
+                                            // Navigate to the LyricsScreen on double-tap
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => LyricsScreen(),
+                                              ),
+                                            );
+                                          },
+                                          child: CoverImage(
+                                            constraints: constraints,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -387,15 +414,8 @@ class _CoverImageState extends State<CoverImage>
                       child: SizedBox(
                         width: constraints.maxWidth * 0.85,
                         height: constraints.maxWidth * 0.85,
-                        child: LoadImageCached(
-                          imageUrl: formatImgURL(
-                            (snapshot.data?.artUri ?? "").toString(),
-                            ImageQuality.high,
-                          ),
-                          fallbackUrl: formatImgURL(
-                            (snapshot.data?.artUri ?? "").toString(),
-                            ImageQuality.medium,
-                          ),
+                        child: Image.asset(
+                          "assets/icons/vinyl.png",
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -406,11 +426,32 @@ class _CoverImageState extends State<CoverImage>
             ),
           ),
           Container(
-            width: widget.constraints.maxWidth * 0.2,
-            height: widget.constraints.maxWidth * 0.2,
+            width: widget.constraints.maxWidth * 0.3,
+            height: widget.constraints.maxWidth * 0.3,
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: Colors.transparent,
               shape: BoxShape.circle,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: StreamBuilder<MediaItem?>(
+              stream: context.watch<VibeyPlayerCubit>().vibeyplayer.mediaItem,
+              builder: (context, snapshot) {
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return LoadImageCached(
+                      imageUrl: formatImgURL(
+                        (snapshot.data?.artUri ?? "").toString(),
+                        ImageQuality.high,
+                      ),
+                      fallbackUrl: formatImgURL(
+                        (snapshot.data?.artUri ?? "").toString(),
+                        ImageQuality.medium,
+                      ),
+                      fit: BoxFit.cover,
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],
@@ -470,7 +511,6 @@ class _UpNextPanelState extends State<UpNextPanel> {
                 curve: Curves.easeInOut,
               );
             } catch (e) {
-              log(e.toString(), name: "UpNextPanel");
               Future.delayed(const Duration(milliseconds: 500), () {
                 _scrollController.scrollTo(
                   index:
@@ -583,12 +623,15 @@ class PlayerCtrlWidgets extends StatelessWidget {
                             textAlign: TextAlign.start,
                             // overflow: TextOverflow.ellipsis,
                             style: Default_Theme.secondoryTextStyle.merge(
-                              const TextStyle(
+                              TextStyle(
                                 fontSize: 22,
                                 fontFamily: "NotoSans",
                                 fontWeight: FontWeight.w700,
                                 overflow: TextOverflow.ellipsis,
-                                color: Default_Theme.primaryColor1,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium!.color,
                               ),
                             ),
                           ),
@@ -605,9 +648,9 @@ class PlayerCtrlWidgets extends StatelessWidget {
                                 fontFamily: "NotoSans",
                                 fontWeight: FontWeight.w500,
                                 overflow: TextOverflow.ellipsis,
-                                color: Default_Theme.primaryColor1.withOpacity(
-                                  0.7,
-                                ),
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyMedium!.color?.withAlpha(100),
                               ),
                             ),
                           ),
@@ -694,11 +737,15 @@ class PlayerCtrlWidgets extends StatelessWidget {
                   timeLabelTextStyle: Default_Theme.secondoryTextStyle.merge(
                     TextStyle(
                       fontSize: 15,
-                      color: Default_Theme.primaryColor1.withOpacity(0.7),
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.color?.withAlpha(200),
                     ),
                   ),
                   timeLabelLocation: TimeLabelLocation.below,
-                  baseBarColor: Default_Theme.primaryColor2.withOpacity(0.1),
+                  baseBarColor: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium!.color?.withAlpha(50),
                   progressBarColor:
                       snapshot.data?.currentPlayerState.playing ?? false
                           ? Default_Theme.accentColor1
@@ -733,7 +780,7 @@ class PlayerCtrlWidgets extends StatelessWidget {
                     onPressed: () => musicPlayer.skipToPrevious(),
                     icon: Image.asset(
                       "assets/icons/pre_song_icn.png",
-                      color: Default_Theme.primaryColor01,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
                       height: 30.0,
                       width: 30.0,
                     ),
@@ -757,12 +804,15 @@ class PlayerCtrlWidgets extends StatelessWidget {
                             ),
                             width: 75,
                             height: 75,
-                            child: const Center(
+                            child: Center(
                               child: SizedBox(
                                 width: 35,
                                 height: 35,
                                 child: CircularProgressIndicator(
-                                  color: Default_Theme.primaryColor1,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium!.color,
                                 ),
                               ),
                             ),
@@ -824,13 +874,16 @@ class PlayerCtrlWidgets extends StatelessWidget {
                             ),
                             width: 75,
                             height: 75,
-                            child: const Center(
+                            child: Center(
                               child: SizedBox(
                                 width: 35,
                                 height: 35,
                                 child: Icon(
                                   MingCute.warning_line,
-                                  color: Default_Theme.primaryColor1,
+                                  color:
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium!.color,
                                 ),
                               ),
                             ),
@@ -872,7 +925,7 @@ class PlayerCtrlWidgets extends StatelessWidget {
                     onPressed: () => musicPlayer.skipToNext(),
                     icon: Image.asset(
                       "assets/icons/skip_song_icn.png",
-                      color: Default_Theme.primaryColor01,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
                       height: 30.0,
                       width: 30.0,
                     ),
@@ -901,7 +954,7 @@ class PlayerCtrlWidgets extends StatelessWidget {
                         color:
                             (snapshot.data ?? false)
                                 ? Default_Theme.accentColor1
-                                : Default_Theme.primaryColor01,
+                                : Theme.of(context).textTheme.bodyMedium!.color,
                         height: 30.0,
                         width: 30.0,
                       ),
@@ -936,7 +989,10 @@ class PlayerCtrlWidgets extends StatelessWidget {
                             switch (snapshot.data) {
                               case LoopMode.off:
                                 icon = MingCute.repeat_line;
-                                iconColor = Default_Theme.primaryColor1;
+                                iconColor =
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium!.color!;
                                 break;
                               case LoopMode.one:
                                 icon = MingCute.repeat_one_line;
@@ -948,7 +1004,10 @@ class PlayerCtrlWidgets extends StatelessWidget {
                                 break;
                               default:
                                 icon = MingCute.repeat_line;
-                                iconColor = Default_Theme.primaryColor1;
+                                iconColor =
+                                    Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium!.color!;
                             }
 
                             return IconButton(
@@ -1018,15 +1077,18 @@ class AmbientImgShadowWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Container(
+            width: 220,
+            height: 220,
             decoration: BoxDecoration(
               color: Colors.transparent,
+              shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color:
                       snapshot.data?.dominantColor?.color ??
                       const Color.fromARGB(255, 255, 68, 68),
                   blurRadius: 120,
-                  spreadRadius: 30,
+                  spreadRadius: 20,
                 ),
               ],
             ),
@@ -1037,7 +1099,7 @@ class AmbientImgShadowWidget extends StatelessWidget {
               color: Colors.transparent,
               boxShadow: [
                 BoxShadow(
-                  color: Color.fromARGB(39, 68, 252, 255),
+                  color: Colors.transparent,
                   blurRadius: 120,
                   spreadRadius: 30,
                 ),
