@@ -11,6 +11,8 @@
 
 </div>
 
+![VibeY (1)](https://github.com/user-attachments/assets/2a61b3d3-5849-40c5-a823-97193bb42ac3)
+
 VibeY delivers premium music streaming without ads, featuring exceptional audio quality and pristine sound reproduction. Enjoy uninterrupted listening while VibeY creates tailored playlists perfectly suited for every moment and activity.
 
 ## 📌 Features
@@ -30,9 +32,11 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 
 ## 📸 Screenshots
 <div style="display: flex; gap: 10px;">
-    <img src="https://github.com/user-attachments/assets/ba690cd0-2ae4-4628-a672-4a9f139a8dc5" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
-    <img src="https://github.com/user-attachments/assets/80cce045-8929-463a-8d53-ea044130bac8" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
-    <img src="https://github.com/user-attachments/assets/799165bc-e03d-46f1-9981-6353fd76f6b8" width="300" height="600" style="border-radius: 15px; object-fit: cover;">
+    <img src="https://github.com/user-attachments/assets/e4a4cfff-a7db-4024-a867-1fc4e2637e79" width="310" height="550" >
+    <img src="https://github.com/user-attachments/assets/dd89be66-d59b-4f7b-85d0-c690f2031a85" width="310" height="550" >
+    <img src="https://github.com/user-attachments/assets/5a81d1a5-9214-4242-b26c-456461120407" width="310" height="550" >
+    <img src="https://github.com/user-attachments/assets/a39fc114-7c4a-4985-94b1-99385617213b" width="310" height="550" >
+    <img src="https://github.com/user-attachments/assets/0f9dfb4f-cfa5-4ccc-9855-02037af0208d" width="310" height="550" >
 </div>
 
 
