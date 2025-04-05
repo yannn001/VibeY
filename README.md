@@ -39,6 +39,14 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
     <img src="https://github.com/user-attachments/assets/0f9dfb4f-cfa5-4ccc-9855-02037af0208d" width="310" height="550" >
 </div>
 
+## ✔ Download App
+<div gap: 20px;">
+<a href='https://vibey.en.uptodown.com/android' title='Download VibeY' >
+<img src='https://stc.utdstc.com/img/mediakit/download-aao-big.png' alt='Download VibeY'>
+</a>
+
+[![Download Latest APK](https://img.shields.io/github/v/release/yannn001/VibeY?label=Download%20APK&color=blue&logo=android)](https://github.com/yannn001/VibeY/releases/latest/download/VibeY.apk)
+</div>
 
 ## 🚀 Getting Started
 Follow these steps to set up and run VibeY on your local machine.
