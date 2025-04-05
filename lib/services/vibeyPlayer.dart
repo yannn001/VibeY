@@ -235,6 +235,23 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
   }
 
   Future<AudioSource> getAudioSource(MediaItem mediaItem) async {
+    await _manageCacheSize();
+    // if (mediaItem.extras?["source"] == "saavn") {
+    //   String? kurl = await getJsQualityURL(mediaItem.extras?["url"]);
+    //   final cachedFile = await _getCachedFile(kurl!);
+    //   if (cachedFile != null) {
+    //     return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
+    //   }
+    //   return AudioSource.uri(Uri.parse(kurl), tag: mediaItem);
+    // } else if (mediaItem.extras?["source"] == "spotify") {
+    //   String? kurl = await getJsQualityURL(mediaItem.extras?["url"]);
+    //   final cachedFile = await _getCachedFile(kurl!);
+    //   if (cachedFile != null) {
+    //     return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
+    //   }
+    //   return AudioSource.uri(Uri.parse(kurl), tag: mediaItem);
+    // }
+
     if (mediaItem.extras?["source"] == "youtube") {
       String? quality = await DBService.getSettingStr(
         GlobalStrConsts.ytStrmQuality,
@@ -248,26 +265,29 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
         return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
       }
 
+      final mediaItemtitle = mediaItem.title;
+      SnackbarService.showMessage("Loading $mediaItemtitle...");
+
       final downloadFuture = _downloadYouTubeAudio(id);
 
       // Try to complete download
       try {
-        final file = await downloadFuture.timeout(Duration(seconds: 2));
+        final file = await downloadFuture;
         if (file != null) {
           return AudioSource.uri(Uri.file(file.path), tag: mediaItem);
         }
       } catch (e) {
-        // Don't do anything here as we want to continue to streaming
+        SnackbarService.showMessage("Song not available");
       }
 
-      return YouTubeAudioSource(videoId: id, quality: quality, tag: mediaItem);
+      // return YouTubeAudioSource(videoId: id, quality: quality, tag: mediaItem);
     }
     String? kurl = await getJsQualityURL(mediaItem.extras?["url"]);
     final cachedFile = await _getCachedFile(kurl!);
     if (cachedFile != null) {
       return AudioSource.uri(Uri.file(cachedFile.path), tag: mediaItem);
     }
-    return AudioSource.uri(Uri.parse(kurl!), tag: mediaItem);
+    return AudioSource.uri(Uri.parse(kurl), tag: mediaItem);
   }
 
   // Function to download YouTube audio

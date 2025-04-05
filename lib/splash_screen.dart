@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vibey/theme/default.dart';
 
@@ -49,6 +50,17 @@ class _SplashScreenState extends State<SplashScreen>
         widget.onSplashComplete?.call();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).scaffoldBackgroundColor,
+        statusBarIconBrightness: Theme.of(context).brightness,
+      ),
+    );
   }
 
   @override

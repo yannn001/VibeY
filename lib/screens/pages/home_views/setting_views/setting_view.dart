@@ -15,6 +15,7 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       appBar: AppBar(
         toolbarHeight: 90,
         centerTitle: true,
@@ -22,7 +23,7 @@ class SettingsView extends StatelessWidget {
           color: Theme.of(context).textTheme.bodyMedium!.color,
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        surfaceTintColor: Theme.of(context).textTheme.bodyMedium!.color,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
         foregroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           'Adjust',
@@ -159,6 +160,23 @@ class SettingsView extends StatelessWidget {
                   );
                 },
               ),
+              //buy me a coffee
+              settingListTile(
+                context,
+                title: "Support Us",
+                subtitle: "Buy me a coffee",
+                icon: Icons.coffee,
+                onTap: () async {
+                  const url = 'https://buymeacoffee.com/yannn001';
+                  final Uri buyMeACoffeeUrl = Uri.parse(url);
+
+                  await launchUrl(
+                    buyMeACoffeeUrl,
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+              ),
+
               settingListTile(
                 context,
                 title: "Dark Mode",
@@ -195,7 +213,7 @@ class SettingsView extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      'Version: v1.0.7+7',
+                      'Version: v1.0.8+8',
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],

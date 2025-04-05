@@ -78,162 +78,150 @@ class _AudioPlayerViewState extends State<AudioPlayerView>
   @override
   Widget build(BuildContext context) {
     Vibeyplayer musicPlayer = context.read<VibeyPlayerCubit>().vibeyplayer;
-    return Shortcuts(
-      shortcuts: {
-        LogicalKeySet(LogicalKeyboardKey.keyS): const ShuffleIntent(),
-        LogicalKeySet(LogicalKeyboardKey.keyL): const LoopPlaylistIntent(),
-        LogicalKeySet(LogicalKeyboardKey.keyM): const LoopOffIntent(),
-        LogicalKeySet(LogicalKeyboardKey.keyO): const LoopSingleIntent(),
-        LogicalKeySet(LogicalKeyboardKey.keyT): const TimerIntent(),
-        LogicalKeySet(LogicalKeyboardKey.backspace): const BackIntent(),
+    return Actions(
+      actions: {
+        ShuffleIntent: CallbackAction<ShuffleIntent>(
+          onInvoke: (ShuffleIntent intent) {
+            if (context
+                .read<VibeyPlayerCubit>()
+                .vibeyplayer
+                .shuffleMode
+                .value) {
+              context.read<VibeyPlayerCubit>().vibeyplayer.shuffle(false);
+            } else {
+              context.read<VibeyPlayerCubit>().vibeyplayer.shuffle(true);
+            }
+            return null;
+          },
+        ),
+        LoopPlaylistIntent: CallbackAction<LoopPlaylistIntent>(
+          onInvoke: (LoopPlaylistIntent intent) {
+            context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
+              LoopMode.all,
+            );
+            return null;
+          },
+        ),
+        LoopOffIntent: CallbackAction<LoopOffIntent>(
+          onInvoke: (LoopOffIntent intent) {
+            context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
+              LoopMode.off,
+            );
+            return null;
+          },
+        ),
+        LoopSingleIntent: CallbackAction<LoopSingleIntent>(
+          onInvoke: (LoopSingleIntent intent) {
+            context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
+              LoopMode.one,
+            );
+            return null;
+          },
+        ),
+        BackIntent: CallbackAction<BackIntent>(
+          onInvoke: (BackIntent intent) {
+            Navigator.pop(context);
+            return null;
+          },
+        ),
       },
-      child: Actions(
-        actions: {
-          ShuffleIntent: CallbackAction<ShuffleIntent>(
-            onInvoke: (ShuffleIntent intent) {
-              if (context
-                  .read<VibeyPlayerCubit>()
-                  .vibeyplayer
-                  .shuffleMode
-                  .value) {
-                context.read<VibeyPlayerCubit>().vibeyplayer.shuffle(false);
-              } else {
-                context.read<VibeyPlayerCubit>().vibeyplayer.shuffle(true);
-              }
-              return null;
-            },
-          ),
-          LoopPlaylistIntent: CallbackAction<LoopPlaylistIntent>(
-            onInvoke: (LoopPlaylistIntent intent) {
-              context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
-                LoopMode.all,
-              );
-              return null;
-            },
-          ),
-          LoopOffIntent: CallbackAction<LoopOffIntent>(
-            onInvoke: (LoopOffIntent intent) {
-              context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
-                LoopMode.off,
-              );
-              return null;
-            },
-          ),
-          LoopSingleIntent: CallbackAction<LoopSingleIntent>(
-            onInvoke: (LoopSingleIntent intent) {
-              context.read<VibeyPlayerCubit>().vibeyplayer.setLoopMode(
-                LoopMode.one,
-              );
-              return null;
-            },
-          ),
-          BackIntent: CallbackAction<BackIntent>(
-            onInvoke: (BackIntent intent) {
-              Navigator.pop(context);
-              return null;
-            },
-          ),
-        },
-        child: FocusScope(
-          // Added this widget to enable keyboard shortcuts
-          autofocus: true,
-          child: Scaffold(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            extendBodyBehindAppBar: true,
-            appBar: AppBar(
-              iconTheme: IconThemeData(
-                color: Theme.of(context).textTheme.bodyMedium!.color,
+      child: FocusScope(
+        // Added this widget to enable keyboard shortcuts
+        autofocus: true,
+        child: Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            iconTheme: IconThemeData(
+              color: Theme.of(context).textTheme.bodyMedium!.color,
+              size: 32,
+            ),
+            toolbarHeight: 80,
+            backgroundColor: Colors.transparent,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            foregroundColor: Default_Theme.primaryColor01,
+            centerTitle: true,
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.keyboard_arrow_down_rounded,
                 size: 32,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
-              toolbarHeight: 80,
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              elevation: 0,
-              foregroundColor: Default_Theme.primaryColor01,
-              centerTitle: true,
-              actionsPadding: const EdgeInsets.symmetric(horizontal: 10),
-              leading: IconButton(
+            ),
+            actions: [
+              IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  showMoreBottomSheet(
+                    context,
+                    context.read<VibeyPlayerCubit>().vibeyplayer.currentMedia,
+                  );
                 },
                 icon: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  size: 32,
+                  MingCute.more_1_fill,
+                  size: 28,
                   color: Theme.of(context).textTheme.bodyMedium!.color,
                 ),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showMoreBottomSheet(
-                      context,
-                      context.read<VibeyPlayerCubit>().vibeyplayer.currentMedia,
-                    );
-                  },
-                  icon: Icon(
-                    MingCute.more_1_fill,
-                    size: 28,
+            ],
+            title: Column(
+              children: [
+                Text(
+                  'VibeY',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Default_Theme.accentColor1,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ).merge(Default_Theme.secondoryTextStyle),
+                ),
+                Text(
+                  'Now Playing',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     color: Theme.of(context).textTheme.bodyMedium!.color,
-                  ),
+                    fontSize: 12,
+                  ).merge(Default_Theme.secondoryTextStyle),
                 ),
               ],
-              title: Column(
-                children: [
-                  Text(
-                    'VibeY',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Default_Theme.accentColor1,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ).merge(Default_Theme.secondoryTextStyle),
-                  ),
-                  Text(
-                    'Now Playing',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium!.color,
-                      fontSize: 12,
-                    ).merge(Default_Theme.secondoryTextStyle),
-                  ),
-                ],
-              ),
             ),
-            body: AnimatedSwitcher(
-              duration: const Duration(seconds: 1),
-              child:
-                  ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET)
-                      ? playerUI(context, musicPlayer)
-                      : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minWidth: 400,
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.60,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: playerUI(context, musicPlayer),
-                            ),
+          ),
+          body: AnimatedSwitcher(
+            duration: const Duration(seconds: 1),
+            child:
+                ResponsiveBreakpoints.of(context).smallerOrEqualTo(TABLET)
+                    ? playerUI(context, musicPlayer)
+                    : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: 400,
+                            maxWidth: MediaQuery.of(context).size.width * 0.60,
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.8,
-                                child: UpNextPanel(
-                                  panelController: _panelController,
-                                ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: playerUI(context, musicPlayer),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: UpNextPanel(
+                                panelController: _panelController,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-            ),
+                        ),
+                      ],
+                    ),
           ),
         ),
       ),
