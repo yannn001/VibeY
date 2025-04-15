@@ -98,4 +98,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ---
 
-If you enjoy using VibeY, please consider giving us a star on GitHub! ⭐
+If you enjoy using VibeY, please consider giving us a star on GitHub!⭐
