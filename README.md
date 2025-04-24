@@ -45,6 +45,7 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 <img src='https://stc.utdstc.com/img/mediakit/download-aao-big.png' alt='Download VibeY'>
 </a>
 
+
 [![Download Latest APK](https://img.shields.io/github/v/release/yannn001/VibeY?label=Download%20APK&color=blue&logo=android)](https://github.com/yannn001/VibeY/releases/latest/download/VibeY.apk)
 </div>
 
