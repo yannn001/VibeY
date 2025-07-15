@@ -11,7 +11,7 @@
 
 </div>
 
-![VibeY (1)](https://github.com/user-attachments/assets/2a61b3d3-5849-40c5-a823-97193bb42ac3)
+![VibeY](https://github.com/user-attachments/assets/2a61b3d3-5849-40c5-a823-97193bb42ac3)
 
 VibeY delivers premium music streaming without ads, featuring exceptional audio quality and pristine sound reproduction. Enjoy uninterrupted listening while VibeY creates tailored playlists perfectly suited for every moment and activity.
 
@@ -44,6 +44,7 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 <a href='https://vibey.en.uptodown.com/android' title='Download VibeY' >
 <img src='https://stc.utdstc.com/img/mediakit/download-aao-big.png' alt='Download VibeY'>
 </a>
+
 
 [![Download Latest APK](https://img.shields.io/github/v/release/yannn001/VibeY?label=Download%20APK&color=blue&logo=android)](https://github.com/yannn001/VibeY/releases/latest/download/VibeY.apk)
 </div>
@@ -98,4 +99,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ---
 
-If you enjoy using VibeY, please consider giving us a star on GitHub! ⭐
+If you enjoy using VibeY, please consider giving us a star on GitHub!⭐
