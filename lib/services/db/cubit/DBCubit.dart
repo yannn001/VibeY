@@ -12,7 +12,14 @@ part 'DBState.dart';
 
 class DBCubit extends Cubit<MediadbState> {
   DBService vibeyDBService = DBService();
+  static DBCubit? _instance;
+  static DBCubit get instance => _instance!;
+
+  MediaItem? _lastCheckedMedia;
+  bool _lastIsLiked = false;
+
   DBCubit() : super(MediadbInitial()) {
+    _instance = this;
     addNewPlaylistToDB(MediaPlaylistDB(playlistName: "Your Likes"));
   }
 
@@ -222,6 +229,20 @@ class DBCubit extends Cubit<MediadbState> {
     } else {
       return null;
     }
+  }
+
+  /// Call this when the song changes or after like/unlike
+  Future<void> updateLikeCache(MediaItem mediaItem) async {
+    _lastCheckedMedia = mediaItem;
+    _lastIsLiked = await isLiked(mediaItem);
+  }
+
+  /// Use this in your notification code
+  bool isLikedSync(MediaItem mediaItem) {
+    if (_lastCheckedMedia != null && _lastCheckedMedia!.id == mediaItem.id) {
+      return _lastIsLiked;
+    }
+    return false;
   }
 
   @override

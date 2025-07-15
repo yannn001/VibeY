@@ -2,6 +2,7 @@ import 'dart:math' as random;
 
 import 'package:flutter/services.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibey/models/source_engines.dart';
 import 'package:vibey/modules/fetch_data/fetch_albums.dart';
 import 'package:vibey/modules/home/cubit/recently_cubits.dart';
@@ -309,7 +310,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void requestPermissions() async {
-    await OneSignal.Notifications.requestPermission(true);
+    final prefs = await SharedPreferences.getInstance();
+    final asked = prefs.getBool('onesignal_permission_asked') ?? false;
+
+    if (!asked) {
+      bool accepted = await OneSignal.Notifications.requestPermission(true);
+      await prefs.setBool('onesignal_permission_asked', true);
+      await prefs.setBool('onesignal_permission_accepted', accepted);
+    }
   }
 
   // Widget _buildAlbumList(FetchSearchResultsState fetchState) {

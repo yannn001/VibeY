@@ -13,8 +13,10 @@ import 'package:vibey/models/JioMusic.dart';
 import 'package:vibey/models/MediaPlaylist.dart';
 import 'package:vibey/models/Yt_Music.dart';
 import 'package:vibey/models/songModel.dart';
+import 'package:vibey/screens/widgets/like_widget.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
 import 'package:vibey/services/YtAudioSrc.dart';
+import 'package:vibey/services/db/cubit/DBCubit.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Constants.dart';
 import 'package:vibey/values/Strings_Const.dart';
@@ -87,13 +89,24 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
 
   void _broadcastPlayerEvent(PlaybackEvent event) {
     bool isPlaying = audioPlayer.playing;
+    final media = currentMedia;
+    bool isLiked = DBCubit.instance.isLikedSync(media);
+
     playbackState.add(
       PlaybackState(
-        // Which buttons should appear in the notification now
+        // Notification btns
         controls: [
           MediaControl.skipToPrevious,
           isPlaying ? MediaControl.pause : MediaControl.play,
           MediaControl.skipToNext,
+          MediaControl(
+            androidIcon:
+                isLiked
+                    ? 'drawable/ic_favorite'
+                    : 'drawable/ic_favorite_border', 
+            label: isLiked ? 'Unlike' : 'Like',
+            action: MediaAction.fastForward,
+          ),
         ],
         processingState: switch (event.processingState) {
           ProcessingState.idle => AudioProcessingState.idle,
@@ -107,9 +120,10 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
           MediaAction.skipToPrevious,
           MediaAction.playPause,
           MediaAction.skipToNext,
+          MediaAction.fastForward,
           MediaAction.seek,
         },
-        androidCompactActionIndices: const [0, 1, 2],
+        androidCompactActionIndices: const [0, 1, 3],
         updatePosition: audioPlayer.position,
         playing: isPlaying,
         bufferedPosition: audioPlayer.bufferedPosition,
@@ -403,6 +417,7 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
     if (queue.value.isNotEmpty) {
       currentPlayingIdx = idx;
       await playMediaItem(currentMedia, doPlay: doPlay);
+      await DBCubit.instance.updateLikeCache(currentMedia);
       DBService.putRecentlyPlayed(MediaItem2MediaItemDB(currentMedia));
     }
   }
@@ -435,6 +450,19 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
         prepare4play(idx: shuffleList[shuffleIdx], doPlay: true);
       }
     }
+  }
+
+  @override
+  Future<void> fastForward() async {
+    // Toggle like status
+    final media = currentMedia;
+    bool isLiked = DBCubit.instance.isLikedSync(media);
+
+    await DBCubit.instance.setLike(media, isLiked: !isLiked);
+    await DBCubit.instance.updateLikeCache(media);
+
+    // Update notification to reflect new like state
+    _broadcastPlayerEvent(audioPlayer.playbackEvent);
   }
 
   @override
