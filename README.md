@@ -5,7 +5,7 @@
   
   ![Flutter](https://img.shields.io/badge/Flutter-3.0%2B-blue)
   ![Dart](https://img.shields.io/badge/Dart-%5E3.0.0-blue)
-  ![License](https://img.shields.io/badge/License-MIT-green)
+  ![License](https://img.shields.io/badge/License-GNU-green)
   ![GitHub release](https://img.shields.io/github/v/release/yannn001/VibeY)
 
 </div>
