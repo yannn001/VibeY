@@ -1,4 +1,5 @@
 import 'package:vibey/modules/settings_cubit/cubit/settings_cubit.dart';
+import 'package:vibey/screens/pages/analytics/music_analytics_screen.dart';
 import 'package:vibey/services/UpdateChecker.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
@@ -7,12 +8,14 @@ import 'package:vibey/theme/default.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibey/theme/ThemeCubit.dart';
+// navigation is performed via context.push (go_router) or Navigator; no direct import needed here
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+// removed Get dependency; using go_router for navigation
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
@@ -37,7 +40,16 @@ class SettingsView extends StatelessWidget {
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return ListView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
             children: [
+              _GlassHeader(
+                title: 'Settings',
+                subtitle: 'Tune your experience',
+              ),
+              const SizedBox(height: 12),
+              _GlassCard(
+                child: Column(
+                  children: [
               settingListTile(
                 context,
                 title: "Updates",
@@ -46,6 +58,7 @@ class SettingsView extends StatelessWidget {
                 onTap: () async {
                   final bool updateAvailable =
                       await UpdateChecker.checkForUpdates();
+                  if (!context.mounted) return;
                   if (updateAvailable) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -66,6 +79,7 @@ class SettingsView extends StatelessWidget {
                   }
                 },
               ),
+              const Divider(height: 8),
               settingListTile(
                 context,
                 title: "Vibe Quality",
@@ -100,6 +114,7 @@ class SettingsView extends StatelessWidget {
                       }).toList(),
                 ),
               ),
+              const Divider(height: 8),
               settingListTile(
                 context,
                 title: "Songs Clarity",
@@ -131,6 +146,7 @@ class SettingsView extends StatelessWidget {
                       }).toList(),
                 ),
               ),
+              const Divider(height: 8),
               settingListTile(
                 context,
                 title: "Audio Settings",
@@ -143,8 +159,10 @@ class SettingsView extends StatelessWidget {
                     flags: <int>[Flag.FLAG_ACTIVITY_NEW_TASK],
                   );
                   await intent.launch();
+                  if (!context.mounted) return;
                 },
               ),
+              const Divider(height: 8),
               settingListTile(
                 context,
                 title: "GitHub",
@@ -158,8 +176,10 @@ class SettingsView extends StatelessWidget {
                     githubUrl,
                     mode: LaunchMode.externalApplication,
                   );
+                  if (!context.mounted) return;
                 },
               ),
+              const Divider(height: 8),
               //buy me a coffee
               settingListTile(
                 context,
@@ -174,9 +194,10 @@ class SettingsView extends StatelessWidget {
                     buyMeACoffeeUrl,
                     mode: LaunchMode.externalApplication,
                   );
+                  if (!context.mounted) return;
                 },
               ),
-
+              const Divider(height: 8),
               settingListTile(
                 context,
                 title: "Dark Mode",
@@ -193,30 +214,47 @@ class SettingsView extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: 20),
-              const Divider(
-                color: Default_Theme.accentColor1,
-                endIndent: 40,
-                indent: 40,
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              _GlassCard(
+                child: settingListTile(
+                  context,
+                  title: "Music Analytics",
+                  subtitle:
+                      "Gain insights into your listening habits and preferences",
+                  icon: Icons.insights_rounded,
+                  onTap: () {
+                    Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MusicAnalyticsScreen()),
+              );
+                  },
+                ),
               ),
               const SizedBox(height: 20),
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      'Yannn',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 28,
-                        color: Theme.of(context).textTheme.bodyMedium!.color,
+              _GlassCard(
+                child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'Yannn',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color:
+                              Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Version: v1.0.9+9',
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                    ),
-                  ],
+                      const SizedBox(height: 4),
+                      Text(
+                        'Version: v2.0.0+10',
+                        style:
+                            const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -234,32 +272,113 @@ class SettingsView extends StatelessWidget {
     Widget? trailing,
     VoidCallback? onTap,
   }) {
+    final tc = Theme.of(context).textTheme.bodyMedium!.color;
     return ListTile(
-      leading: Icon(
-        icon,
-        size: 27,
-        color: Theme.of(context).textTheme.bodyMedium!.color,
-      ),
+      contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      leading: Icon(icon, size: 26, color: tc),
       title: Text(
         title,
         style: TextStyle(
-          color: Theme.of(context).textTheme.bodyMedium!.color,
-          fontSize: 16,
+          color: tc,
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
         ).merge(Default_Theme.secondoryTextStyleMedium),
       ),
       subtitle: Text(
         subtitle,
         style: TextStyle(
-          color: Theme.of(context).textTheme.bodyMedium!.color?.withAlpha(128),
+          color: tc?.withValues(alpha: 0.6),
           fontSize: 12,
+          fontWeight: FontWeight.w600,
         ).merge(Default_Theme.secondoryTextStyleMedium),
       ),
       trailing: trailing,
-      onTap: () {
-        if (onTap != null) {
-          onTap();
-        }
-      },
+      onTap: onTap,
+    );
+  }
+}
+
+class _GlassCard extends StatelessWidget {
+  final Widget child;
+  const _GlassCard({required this.child});
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = scheme.brightness == Brightness.dark;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: isDark
+            ? scheme.surface.withValues(alpha: 0.12)
+            : scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.10)
+              : Colors.black.withValues(alpha: 0.08),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.30)
+                : Colors.black.withValues(alpha: 0.10),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : scheme.primary.withValues(alpha: 0.06),
+            Colors.white.withValues(alpha: 0.02),
+          ],
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: child,
+    );
+  }
+}
+
+class _GlassHeader extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  const _GlassHeader({required this.title, required this.subtitle});
+  @override
+  Widget build(BuildContext context) {
+    final tc = Theme.of(context).textTheme.bodyMedium!.color;
+    return _GlassCard(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: tc,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ).merge(Default_Theme.secondoryTextStyle),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                subtitle,
+                style: TextStyle(
+                  color: tc?.withValues(alpha: 0.6),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ).merge(Default_Theme.secondoryTextStyleMedium),
+              ),
+            ],
+          ),
+          const Icon(Icons.tune_rounded, size: 22),
+        ],
+      ),
     );
   }
 }

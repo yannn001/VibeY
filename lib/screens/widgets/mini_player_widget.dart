@@ -16,7 +16,7 @@ import 'package:icons_plus/icons_plus.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class MiniPlayerWidget extends StatelessWidget {
-  const MiniPlayerWidget({Key? key}) : super(key: key);
+  const MiniPlayerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,212 +71,266 @@ class MiniPlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.pushNamed(GlobalStrConsts.playerScreen);
-      },
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(17)),
-        child: SizedBox(
-          height: 70,
-          child: Stack(
-            children: [
-              Container(
-                color: Colors.transparent,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width,
-                child: LoadImageCached(
-                  imageUrl: formatImgURL(
-                    state.song.artUri.toString(),
-                    ImageQuality.low,
-                  ),
-                  fit: BoxFit.cover,
-                ),
+    final isDesktop = ResponsiveBreakpoints.of(context).isDesktop;
+    final textColor = Default_Theme.primaryColor1;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: GestureDetector(
+        onTap: () {
+          context.pushNamed(GlobalStrConsts.playerScreen);
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
               ),
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaY: 18, sigmaX: 18),
-                  child: Container(
-                    color: Colors.black.withOpacity(
-                      0.5,
-                    ), // Keep the container color transparent
-                  ),
-                ),
-              ),
-              Row(
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(18),
+            child: SizedBox(
+              height: 78,
+              child: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 8,
-                      top: 4,
-                      bottom: 4,
+                  // Background: album art + blur
+                  Positioned.fill(
+                    child: LoadImageCached(
+                      imageUrl: formatImgURL(
+                        state.song.artUri.toString(),
+                        ImageQuality.low,
+                      ),
+                      fit: BoxFit.cover,
                     ),
-                    child: ClipOval(
-                      child: SizedBox(
-                        width: 51,
-                        height: 51,
-                        child: LoadImageCached(
-                          imageUrl: formatImgURL(
-                            state.song.artUri.toString(),
-                            ImageQuality.low,
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaY: 16, sigmaX: 16),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.08),
+                              Colors.black.withValues(alpha: 0.40),
+                            ],
                           ),
-                          fit: BoxFit.cover,
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.08),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+
+                  // Content row
+                  Positioned.fill(
+                    child: Row(
                       children: [
-                        Text(
-                          state.song.title,
-                          style: Default_Theme.secondoryTextStyle.merge(
-                            const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Default_Theme.primaryColor1,
-                            ),
+                        // Artwork
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          state.song.artist ?? 'Unknown Artist',
-                          style: Default_Theme.secondoryTextStyle.merge(
-                            TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.5,
-                              color: Default_Theme.primaryColor1.withOpacity(
-                                0.7,
+                          child: Container(
+                            width: 52,
+                            height: 52,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: LoadImageCached(
+                                imageUrl: formatImgURL(
+                                  state.song.artUri.toString(),
+                                  ImageQuality.low,
+                                ),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      context.read<AddToPlaylistCubit>().setMediaItemModel(
-                        mediaItem2MediaItemModel(state.song),
-                      );
-                      context.pushNamed(GlobalStrConsts.addToPlaylistScreen);
-                    },
-                    icon: const Icon(
-                      FontAwesome.plus_solid,
-                      size: 25,
-                      color: Default_Theme.primaryColor01,
-                    ),
-                  ),
-                  ResponsiveBreakpoints.of(context).isDesktop
-                      ? IconButton(
-                        icon: const Icon(
-                          FontAwesome.backward_step_solid,
-                          size: 28,
-                          color: Default_Theme.primaryColor01,
-                        ),
-                        onPressed: () {
-                          context
-                              .read<VibeyPlayerCubit>()
-                              .vibeyplayer
-                              .skipToPrevious();
-                        },
-                      )
-                      : const SizedBox.shrink(),
-                  (state.isBuffering || isProcessing)
-                      ? const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: SizedBox.square(
-                          dimension: 20,
-                          child: CircularProgressIndicator(
-                            color: Default_Theme.primaryColor1,
+
+                        // Title + artist
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                state.song.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Default_Theme.secondoryTextStyle.merge(
+                                  TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: textColor,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                state.song.artist ?? 'Unknown Artist',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Default_Theme.secondoryTextStyle.merge(
+                                  TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: textColor.withValues(alpha: 0.72),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                      : (isCompleted
-                          ? IconButton(
+
+                        // Add to playlist
+                        IconButton(
+                          onPressed: () {
+                            context.read<AddToPlaylistCubit>().setMediaItemModel(
+                                  mediaItem2MediaItemModel(state.song),
+                                );
+                            context.pushNamed(GlobalStrConsts.addToPlaylistScreen);
+                          },
+                          icon: const Icon(
+                            FontAwesome.plus_solid,
+                            size: 22,
+                            color: Default_Theme.primaryColor01,
+                          ),
+                        ),
+
+                        // Previous (Desktop only)
+                        if (isDesktop)
+                          IconButton(
+                            icon: const Icon(
+                              FontAwesome.backward_step_solid,
+                              size: 24,
+                              color: Default_Theme.primaryColor01,
+                            ),
                             onPressed: () {
                               context
                                   .read<VibeyPlayerCubit>()
                                   .vibeyplayer
-                                  .rewind();
+                                  .skipToPrevious();
                             },
+                          ),
+
+                        // Play/Pause or Loader or Rewind
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          child: (state.isBuffering || isProcessing)
+                              ? const SizedBox.square(
+                                  dimension: 26,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(4.0),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      color: Default_Theme.primaryColor1,
+                                    ),
+                                  ),
+                                )
+                              : (isCompleted
+                                  ? IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<VibeyPlayerCubit>()
+                                            .vibeyplayer
+                                            .rewind();
+                                      },
+                                      icon: const Icon(
+                                        FontAwesome.rotate_right_solid,
+                                        color: Default_Theme.primaryColor01,
+                                        size: 22,
+                                      ),
+                                    )
+                                  : IconButton(
+                                      icon: Icon(
+                                        state.isPlaying
+                                            ? FontAwesome.pause_solid
+                                            : FontAwesome.play_solid,
+                                        size: 24,
+                                        color: Default_Theme.primaryColor01,
+                                      ),
+                                      onPressed: () {
+                                        state.isPlaying
+                                            ? context
+                                                .read<VibeyPlayerCubit>()
+                                                .vibeyplayer
+                                                .pause()
+                                            : context
+                                                .read<VibeyPlayerCubit>()
+                                                .vibeyplayer
+                                                .play();
+                                      },
+                                    )),
+                        ),
+
+                        // Next (Desktop only)
+                        if (isDesktop)
+                          IconButton(
                             icon: const Icon(
-                              FontAwesome.rotate_right_solid,
-                              color: Default_Theme.primaryColor01,
-                              size: 25,
-                            ),
-                          )
-                          : IconButton(
-                            icon: Icon(
-                              state.isPlaying
-                                  ? FontAwesome.pause_solid
-                                  : FontAwesome.play_solid,
-                              size: 26,
+                              FontAwesome.forward_step_solid,
+                              size: 24,
                               color: Default_Theme.primaryColor01,
                             ),
                             onPressed: () {
-                              state.isPlaying
-                                  ? context
-                                      .read<VibeyPlayerCubit>()
-                                      .vibeyplayer
-                                      .pause()
-                                  : context
-                                      .read<VibeyPlayerCubit>()
-                                      .vibeyplayer
-                                      .play();
+                              context
+                                  .read<VibeyPlayerCubit>()
+                                  .vibeyplayer
+                                  .skipToNext();
                             },
-                          )),
-                  ResponsiveBreakpoints.of(context).isDesktop
-                      ? IconButton(
-                        icon: const Icon(
-                          FontAwesome.forward_step_solid,
-                          size: 28,
-                          color: Default_Theme.primaryColor01,
-                        ),
-                        onPressed: () {
-                          context
-                              .read<VibeyPlayerCubit>()
-                              .vibeyplayer
-                              .skipToNext();
-                        },
-                      )
-                      : const SizedBox.shrink(),
-                ],
-              ),
-              isCompleted
-                  ? const SizedBox()
-                  : Positioned.fill(
-                    bottom: 2,
-                    left: 8,
-                    right: 8,
-                    top: 68,
-                    child: StreamBuilder<ProgressBarStreams>(
-                      stream: context.watch<VibeyPlayerCubit>().progressStreams,
-                      builder: (context, snapshot) {
-                        try {
-                          if (snapshot.hasData) {
-                            return ProgressBar(
-                              thumbRadius: 0,
-                              barHeight: 4,
-                              baseBarColor: Colors.transparent,
-                              timeLabelLocation: TimeLabelLocation.none,
-                              progress: snapshot.data!.currentPos,
-                              total:
-                                  snapshot.data!.currentPlaybackState.duration!,
-                            );
-                          }
-                        } catch (e) {}
-                        return const SizedBox();
-                      },
+                          ),
+
+                        const SizedBox(width: 6),
+                      ],
                     ),
                   ),
-            ],
+
+                  // Progress bar
+                  if (!isCompleted)
+                    Positioned(
+                      left: 8,
+                      right: 8,
+                      bottom: 6,
+                      child: StreamBuilder<ProgressBarStreams>(
+                        stream: context.watch<VibeyPlayerCubit>().progressStreams,
+                        builder: (context, snapshot) {
+                          try {
+                            if (snapshot.hasData) {
+                              return ProgressBar(
+                                thumbRadius: 0,
+                                barHeight: 3,
+                                baseBarColor: Colors.white.withValues(alpha: 0.18),
+                                bufferedBarColor: Colors.white.withValues(alpha: 0.28),
+                                progressBarColor: Default_Theme.accentColor1,
+                                timeLabelLocation: TimeLabelLocation.none,
+                                progress: snapshot.data!.currentPos,
+                                total: snapshot.data!.currentPlaybackState.duration!,
+                              );
+                            }
+                          } catch (_) {}
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ),

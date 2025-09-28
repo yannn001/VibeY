@@ -66,7 +66,7 @@ class Default_Theme {
         (states) =>
             states.contains(WidgetState.selected)
                 ? accentColor1
-                : primaryColor2.withOpacity(0),
+                : primaryColor2.withValues(alpha: 0),
       ),
     ),
     searchBarTheme: const SearchBarThemeData(
@@ -78,7 +78,7 @@ class Default_Theme {
     useMaterial3: true,
     scaffoldBackgroundColor: primaryColor1,
     textTheme: TextTheme(bodyMedium: TextStyle(color: themeColor)),
-    cardColor: Default_Theme.tablistbg,
+    cardColor: const Color(0xFFF3F4F6), // neutral light card background
     colorScheme: ColorScheme.fromSwatch().copyWith(
       primary: accentColor2,
       secondary: accentColor1,
@@ -110,11 +110,11 @@ class Default_Theme {
         (states) =>
             states.contains(WidgetState.selected)
                 ? accentColor1
-                : themeColor.withOpacity(0),
+                : themeColor.withValues(alpha: 0),
       ),
     ),
     searchBarTheme: const SearchBarThemeData(
-      backgroundColor: WidgetStatePropertyAll(primaryColor1),
+      backgroundColor: WidgetStatePropertyAll(Color(0xFFF7F7F9)),
     ),
   );
 }

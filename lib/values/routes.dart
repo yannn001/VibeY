@@ -10,6 +10,7 @@ import 'package:vibey/screens/pages/library_screen.dart';
 import 'package:vibey/screens/pages/library_views/playlist_screen.dart';
 import 'package:vibey/screens/pages/search_screen.dart';
 import 'package:vibey/screens/pages/chart/chart_view.dart';
+import 'package:vibey/screens/pages/analytics/music_analytics_screen.dart';
 
 class GlobalRoutes {
   static final GlobalKey<NavigatorState> globalRouterKey =
@@ -58,6 +59,13 @@ class GlobalRoutes {
           );
         },
       ),
+
+      GoRoute(
+        path: '/MusicAnalytics',
+        parentNavigatorKey: globalRouterKey,
+        builder: (context, state) => const MusicAnalyticsScreen(),
+      ),
+
       GoRoute(
         name: GlobalStrConsts.playlistView,
         // parentNavigatorKey: globalRouterKey,

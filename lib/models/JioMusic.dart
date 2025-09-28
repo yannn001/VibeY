@@ -2,14 +2,21 @@ import 'package:vibey/models/songModel.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Strings_Const.dart';
 
+String _sanitizeText(dynamic value, {String fallback = 'Unknown'}) {
+  final String s = (value ?? '').toString().trim();
+  if (s.isEmpty) return fallback;
+  if (s.toLowerCase() == 'null') return fallback;
+  return s;
+}
+
 MediaItemModel fromSaavnSongMap2MediaItem(Map<dynamic, dynamic> songItem) {
   return MediaItemModel(
-    id: songItem["id"] ?? 'Unknown',
-    title: songItem["title"] ?? 'Unknown',
-    album: songItem["album"] ?? 'Unknown',
-    artist: songItem["artist"] ?? 'Unknown',
-    artUri: Uri.parse(songItem["image"]),
-    genre: songItem["genre"] ?? 'Unknown',
+    id: _sanitizeText(songItem["id"]),
+    title: _sanitizeText(songItem["title"]),
+    album: _sanitizeText(songItem["album"]),
+    artist: _sanitizeText(songItem["artist"]),
+    artUri: Uri.parse(_sanitizeText(songItem["image"], fallback: '')),
+    genre: _sanitizeText(songItem["genre"]),
     duration: Duration(
       seconds:
           (songItem["duration"] == "null" ||
@@ -19,10 +26,10 @@ MediaItemModel fromSaavnSongMap2MediaItem(Map<dynamic, dynamic> songItem) {
               : int.parse(songItem["duration"]),
     ),
     extras: {
-      "url": songItem["url"] ?? 'Unknown',
+      "url": _sanitizeText(songItem["url"]),
       "source": "saavn",
-      "perma_url": songItem["perma_url"] ?? 'Unknown',
-      "language": songItem["language"] ?? 'Unknown',
+      "perma_url": _sanitizeText(songItem["perma_url"]),
+      "language": _sanitizeText(songItem["language"]),
     },
   );
 }

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:audio_service/audio_service.dart';
 import 'package:easy_debounce/easy_throttle.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -13,14 +13,14 @@ import 'package:vibey/models/JioMusic.dart';
 import 'package:vibey/models/MediaPlaylist.dart';
 import 'package:vibey/models/Yt_Music.dart';
 import 'package:vibey/models/songModel.dart';
-import 'package:vibey/screens/widgets/like_widget.dart';
+// import 'package:vibey/screens/widgets/like_widget.dart';
 import 'package:vibey/screens/widgets/snackbar.dart';
-import 'package:vibey/services/YtAudioSrc.dart';
+// import 'package:vibey/services/YtAudioSrc.dart';
 import 'package:vibey/services/db/cubit/DBCubit.dart';
 import 'package:vibey/services/db/db_service.dart';
 import 'package:vibey/values/Constants.dart';
 import 'package:vibey/values/Strings_Const.dart';
-import 'package:just_audio/just_audio.dart';
+// duplicate import removed
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 List<int> generateRandomIndices(int length) {
@@ -99,14 +99,14 @@ class Vibeyplayer extends BaseAudioHandler with SeekHandler, QueueHandler {
           MediaControl.skipToPrevious,
           isPlaying ? MediaControl.pause : MediaControl.play,
           MediaControl.skipToNext,
-          MediaControl(
-            androidIcon:
-                isLiked
-                    ? 'drawable/ic_favorite'
-                    : 'drawable/ic_favorite_border', 
-            label: isLiked ? 'Unlike' : 'Like',
-            action: MediaAction.fastForward,
-          ),
+          // MediaControl(
+          //   androidIcon:
+          //       isLiked
+          //           ? 'drawable/ic_favorite'
+          //           : 'drawable/ic_favorite_border',
+          //   label: isLiked ? 'Unlike' : 'Like',
+          //   action: MediaAction.fastForward,
+          // ),
         ],
         processingState: switch (event.processingState) {
           ProcessingState.idle => AudioProcessingState.idle,

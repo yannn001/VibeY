@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vibey/Repo/Youtube/youtube_api.dart';
 import 'package:vibey/modules/AddToPlaylist/cubit/add_to_playlist_cubit.dart';
 import 'package:vibey/modules/connectivity/cubit/connectivity_cubit.dart';
@@ -71,6 +72,16 @@ Future<void> initServices() async {
   YouTubeServices(appDocPath: appDocPath, appSuppPath: appSuppPath);
 }
 
+Future<void> _ensureNotificationPermission() async {
+  if (io.Platform.isAndroid) {
+    // On Android 13+ (API 33), notifications require runtime permission.
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isRestricted || status.isPermanentlyDenied) {
+      await Permission.notification.request();
+    }
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env"); // Load .env file
@@ -78,6 +89,7 @@ Future<void> main() async {
   OneSignal.initialize("6f1894eb-de73-4308-80b0-a8b5feadd6d9");
   GestureBinding.instance.resamplingEnabled = true;
   await initServices();
+  await _ensureNotificationPermission();
   setHighRefreshRate();
   MetadataGod.initialize();
   setupPlayerCubit();
