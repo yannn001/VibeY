@@ -21,13 +21,14 @@ VibeY delivers premium music streaming without ads, featuring exceptional audio 
 - [x] 🔎 **Advanced Search**: Find songs, artists, and albums with powerful search capabilities
 - [x] 🎨 **User-Friendly UI**: A clean and minimal interface designed for ease of use
 - [x] 🌙 **Dark Mode Support**: Enjoy a stylish dark theme optimized for night listening
+- [x] 📊 **Music Analytics**: Gain insights into your listening habits and preferences
 
 ## 🔮 Coming Soon
 - [ ] 🎧 **Spatial Audio**: Experience immersive 3D sound that surrounds you
 - [ ] 🧠 **AI Music Recommendation**: Discover new music tailored to your unique taste
 - [ ] 🌐 **Social Listening Parties**: Listen together with friends in real-time
 - [ ] 🎛️ **Studio-Quality Equalizer**: Fine-tune your listening experience like a professional
-- [ ] 📊 **Music Analytics**: Gain insights into your listening habits and preferences
+
 
 ## 📸 Screenshots
 <div style="display: flex; gap: 10px;">
